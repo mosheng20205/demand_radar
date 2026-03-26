@@ -20,6 +20,7 @@ from radar.notify import (
     send_failure_alert,
     send_notifications,
 )
+from radar.run_digest import send_run_digest
 from radar.scoring import score_lead
 from radar.storage import (
     ensure_database,
@@ -227,6 +228,23 @@ def run_pipeline(config: dict, export_path: str | None = None) -> dict[str, int]
             stats = get_daily_report_stats(conn)
             daily_summary_sent = send_daily_summary(config, stats)
             set_report_state(conn, "daily_summary_last_sent", today_key)
+    run_digest_sent = 0
+    run_digest_config = config.get("run_digest", {})
+    if run_digest_config.get("enabled", False):
+        send_once_per_day = bool(run_digest_config.get("send_once_per_day", True))
+        digest_hour = int(run_digest_config.get("hour_local", 21) or 21)
+        today_key = datetime.now().strftime("%Y-%m-%d")
+        last_sent = get_report_state(conn, "run_digest_last_sent")
+        should_send_digest = True
+        if send_once_per_day:
+            should_send_digest = datetime.now().hour >= digest_hour and last_sent != today_key
+        if should_send_digest:
+            try:
+                run_digest_sent = send_run_digest(config)
+                if run_digest_sent and send_once_per_day:
+                    set_report_state(conn, "run_digest_last_sent", today_key)
+            except Exception:
+                logger.exception("run_digest status=failed")
     conn.close()
 
     return {
@@ -242,5 +260,6 @@ def run_pipeline(config: dict, export_path: str | None = None) -> dict[str, int]
         "notifications_sent": notifications_sent,
         "failure_alerts_sent": failure_alerts_sent,
         "daily_summary_sent": daily_summary_sent,
+        "run_digest_sent": run_digest_sent,
         "source_errors": source_errors,
     }

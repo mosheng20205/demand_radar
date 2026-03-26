@@ -233,6 +233,8 @@ English: The most important fields are:
   English: WeCom, Feishu, and email notification settings.
 - `notification_dedupe_window_hours`: 中文：通知历史去重窗口，默认 `24` 小时；同一条线索在窗口内不会重复推送。  
   English: History-based notification dedupe window, `24` hours by default; the same lead will not be re-sent inside that window.
+- `run_digest`: 中文：老板可读版日报配置。默认可设置为每天 `21` 点后首次全量运行完成时自动发送 1 次。  
+  English: Human-readable exec digest config. By default it can be set to send once after the first full run completed after `21:00` local time.
 - `sources[]`: 中文：真正的数据来源列表。  
   English: The actual list of data sources.
 - `sources[].name`: 中文：来源标识，必须稳定且唯一。  

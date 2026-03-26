@@ -27,6 +27,7 @@ def _print_result(result: dict[str, int]) -> None:
         f"product_exported={result['product_exported']} "
         f"notified_leads={result['notified_leads']} notifications_sent={result['notifications_sent']} "
         f"failure_alerts_sent={result['failure_alerts_sent']} daily_summary_sent={result['daily_summary_sent']} "
+        f"run_digest_sent={result['run_digest_sent']} "
         f"source_errors={result['source_errors']}"
     )
 

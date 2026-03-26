@@ -17,6 +17,11 @@
     "enabled": true,
     "hour_local": 21
   },
+  "run_digest": {
+    "enabled": true,
+    "send_once_per_day": true,
+    "hour_local": 21
+  },
   "notification_filters": {
     "zbj_service_min_sales": 20
   },
