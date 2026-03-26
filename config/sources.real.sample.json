@@ -1731,8 +1731,9 @@
           "cursor": "0",
           "count": 30
         },
-        "timeout_seconds": 15,
-        "retries": 0
+        "timeout_seconds": 45,
+        "retries": 1,
+        "backoff_seconds": 3
       }
     },
     {
