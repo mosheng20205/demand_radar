@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "title": "求一个库存异常自动提醒方案",
+      "content": "人工盯后台效率太低，每天都要看几次，有没有便宜一点的工具。",
+      "url": "https://example.com/posts/1",
+      "published_at": "2026-03-24T16:30:00"
+    },
+    {
+      "title": "有没有适合小团队的订单售后日报脚本",
+      "content": "现在全靠 Excel 汇总，太麻烦，而且经常漏掉异常单。",
+      "url": "https://example.com/posts/2",
+      "published_at": "2026-03-24T16:45:00"
+    }
+  ]
+}

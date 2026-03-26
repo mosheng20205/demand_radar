@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "title": "求脚本：多店铺订单每天都要导出，太麻烦了",
+      "content": "看完视频想要同款工具，我们团队每天都要做这个动作，能不能自动汇总后直接提醒。",
+      "url": "https://www.bilibili.com/video/BV1demo1#reply1",
+      "published_at": "2026-03-25 14:00:00"
+    },
+    {
+      "title": "有没有现成工具，ERP 对账老报错",
+      "content": "现在的流程很不稳定，经常导出失败，求一个能批量对账和导出日报的方案。",
+      "url": "https://www.bilibili.com/video/BV1demo2#reply2",
+      "published_at": "2026-03-25 14:10:00"
+    }
+  ]
+}

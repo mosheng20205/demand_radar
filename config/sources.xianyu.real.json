@@ -1,0 +1,129 @@
+{
+  "database_path": "data/xianyu_real.db",
+  "min_score": 10,
+  "notify_min_score": 999,
+  "export_path": "exports/xianyu_real.csv",
+  "health_export_path": "exports/xianyu_real_health.csv",
+  "product_directions_export_path": "exports/xianyu_real_products.csv",
+  "log_path": "logs/demand_radar_xianyu_real.log",
+  "log_level": "INFO",
+  "fetch": {
+    "timeout_seconds": 20,
+    "retries": 0,
+    "backoff_seconds": 1,
+    "user_agent": "DemandRadar/0.1 (+xianyu-real)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "46e998c0-cbe7-4c98-b2a2-e76ac499beb4",
+    "profile_name": "咸鱼专用浏览器",
+    "close_after_fetch": false,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": ["python", "script", "automation", "playwright", "rpa", "bot"]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": ["batch", "daily", "auto", "repeated", "monitor", "sync"]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": ["manual", "slow", "error", "unstable", "time-consuming"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["export", "reconcile", "alert", "report", "collect", "upload"]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": ["price", "quote", "pricing", "budget"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["stolen account", "credential stuffing", "bypass payment"]
+    }
+  },
+  "source_score_bonus": {
+    "service_titles": 15
+  },
+  "sources": [
+    {
+      "name": "xianyu_search_python_automation_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "xianyu_service_list",
+      "category": "service_titles",
+      "search_keyword": "python automation",
+      "location": "https://www.goofish.com/search?q=python%20automation",
+      "default_url": "https://www.goofish.com/search?q=python%20automation",
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "pagination": {
+        "page_numbers": [1, 2],
+        "location_template": "https://www.goofish.com/search?q=python%20automation",
+        "default_url_template": "https://www.goofish.com/search?q=python%20automation",
+        "stop_on_duplicate_page": true,
+        "duplicate_overlap_ratio": 0.95
+      },
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 2,
+      "scroll_pause_ms": 1500,
+      "retry_on_empty_attempts": 2,
+      "retry_on_empty_wait_ms": 1800,
+      "retry_on_empty_reset_to_blank": true,
+      "retry_on_empty_html_markers": [
+        "passport.goofish.com/mini_login",
+        "mini_login.htm",
+        "J_MIDDLEWARE_FRAME_WIDGET",
+        "mtop.taobao.idlemtopsearch.pc.search/1.0/_____tmd_____"
+      ],
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const clickIfVisible = (selector) => { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); return true; } return false; }; const selectors = ['.ant-modal-close', '[class*=\"closeIcon\"]', '[class*=\"close-icon\"]', '[aria-label=\"Close\"]']; for (const selector of selectors) { clickIfVisible(selector); } const blockers = ['.ant-modal-root', '[class*=\"login-iframe-wrap\"]', '#xy-login-iframe']; for (const selector of blockers) { for (const node of document.querySelectorAll(selector)) { if (node instanceof HTMLElement) { node.style.display = 'none'; node.remove(); } } } for (const node of document.querySelectorAll('.ant-modal-mask')) { if (node instanceof HTMLElement) { node.style.display = 'none'; node.remove(); } } if (document.body instanceof HTMLElement) { document.body.style.overflow = 'auto'; } return document.querySelectorAll('[class*=\"feeds-item-wrap\"]').length; }",
+          "wait_after_ms": 1800
+        },
+        {
+          "type": "wait",
+          "wait_ms": 4000
+        },
+        {
+          "type": "click_pagination",
+          "target_page": "{page_number}",
+          "optional": true,
+          "wait_after_ms": 3500
+        },
+        {
+          "type": "wait",
+          "wait_ms": 1200
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cardSelector = '[class*=\"feeds-item-wrap\"]'; const anchors = Array.from(document.querySelectorAll('a[href*=\"goofish.com/item?id=\"], a[href*=\"/item?id=\"], a[href*=\"item?id=\"]')); const candidates = anchors.length ? anchors : Array.from(document.querySelectorAll(cardSelector)); const seen = new Set(); return candidates.map((node) => { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href]'); const card = (node instanceof HTMLElement ? node.closest(cardSelector) || node : null) || (anchor ? anchor.closest(cardSelector) : null) || anchor; if (!card) return null; const url = anchor ? toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || '') : ''; const title = normalize((card.querySelector('[class*=\"main-title\"]') || anchor || card).textContent); const priceText = normalize((card.querySelector('[class*=\"price-wrap\"]') || {}).textContent || ''); const sellerParts = Array.from(card.querySelectorAll('[class*=\"seller-text\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const tagParts = Array.from(card.querySelectorAll('[class*=\"cpv\"], [class*=\"service\"], [class*=\"price-desc\"], [class*=\"recommend-reason\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const summary = normalize(card.innerText); return { title, url, priceText, sellerName: sellerParts.join(' / '), cityName: sellerParts[0] || '', tags: tagParts.join(' / '), summary }; }).filter((item) => item && item.title && item.url && /\\/item\\?id=/.test(item.url) && !seen.has(item.url) && seen.add(item.url)); }",
+      "rendered_html_path": "logs/xianyu_search_python_automation.real.rendered.html",
+      "screenshot_path": "logs/xianyu_search_python_automation.real.png",
+      "extracted_json_path": "logs/xianyu_search_python_automation.real.items.json",
+      "title_include_keywords": ["python", "automation", "script", "playwright", "rpa", "bot"],
+      "content_include_keywords": ["python", "automation", "script", "playwright", "rpa", "bot"],
+      "content_exclude_keywords": ["course", "pdf", "ebook", "udemy"],
+      "max_items": 20
+    }
+  ]
+}

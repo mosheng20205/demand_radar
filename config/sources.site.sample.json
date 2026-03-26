@@ -1,0 +1,127 @@
+{
+  "database_path": "data/site_demo.db",
+  "min_score": 10,
+  "notify_min_score": 40,
+  "export_path": "exports/site_demo.csv",
+  "product_directions_export_path": "exports/site_product_directions.csv",
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": ["求代做", "求购买", "求脚本", "求工具", "悬赏", "need help", "custom tool"]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": ["每天", "经常", "批量", "自动", "every day", "often", "batch", "automate"]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": ["太贵", "太麻烦", "不稳定", "报错", "too expensive", "painful", "errors", "hard to troubleshoot"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["提醒", "导出", "对账", "汇总", "alert", "export", "reconcile", "summary"]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": ["预算", "报价", "付费", "budget", "price"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "撞库", "stolen account"]
+    }
+  },
+  "source_score_bonus": {
+    "forum_posts": 12,
+    "review_pages": 15,
+    "service_titles": 15,
+    "demand_market": 18
+  },
+  "sources": [
+    {
+      "name": "site_xianyu_sample",
+      "kind": "json",
+      "site_kind": "xianyu_service_list",
+      "category": "service_titles",
+      "location": "samples/xianyu_service.sample.json",
+      "base_url": "https://www.goofish.com",
+      "title_include_keywords": ["python", "ERP", "自动化", "脚本", "数据", "电商"],
+      "max_items": 10
+    },
+    {
+      "name": "site_zbj_demand_hall_sample",
+      "kind": "json",
+      "site_kind": "zbj_demand_hall",
+      "category": "demand_market",
+      "location": "samples/zbj_demand_hall.sample.json",
+      "title_include_keywords": ["脚本", "自动", "报表", "ERP", "对账", "提醒"],
+      "max_items": 10
+    },
+    {
+      "name": "site_v2ex_sample",
+      "kind": "rss",
+      "site_kind": "v2ex_rss",
+      "category": "forum_posts",
+      "location": "samples/v2ex_programmer.xml",
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "json",
+          "site_kind": "v2ex_json_feed",
+          "location": "samples/v2ex_programmer.json"
+        },
+        {
+          "kind": "html_links",
+          "site_kind": "v2ex_topics_html",
+          "location": "samples/v2ex_go_programmer.html",
+          "base_url": "https://www.v2ex.com"
+        }
+      ]
+    },
+    {
+      "name": "site_sourceforge_sample",
+      "kind": "html_text_regex",
+      "site_kind": "sourceforge_reviews",
+      "category": "review_pages",
+      "location": "samples/sourceforge_reviews.html",
+      "default_url": "https://sourceforge.net/software/product/sample/"
+    },
+    {
+      "name": "site_zbj_sample",
+      "kind": "html_links",
+      "site_kind": "zbj_list",
+      "category": "service_titles",
+      "location": "samples/zbj_list.html",
+      "base_url": "https://shop.zbj.com"
+    },
+    {
+      "name": "site_zbj_search_sample",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "location": "samples/zbj_search.html",
+      "base_url": "https://fuwu.zbj.com"
+    },
+    {
+      "name": "site_zbj_detail_sample",
+      "kind": "html_text_regex",
+      "site_kind": "zbj_service_detail",
+      "category": "service_titles",
+      "location": "samples/zbj_service_detail.html",
+      "default_url": "https://www.zbj.com/fw/999999.html"
+    }
+  ]
+}

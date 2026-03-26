@@ -1,0 +1,187 @@
+{
+  "database_path": "data/bilibili_real.db",
+  "min_score": 10,
+  "notify_min_score": 999,
+  "export_path": "exports/bilibili_real.csv",
+  "health_export_path": "exports/bilibili_real_health.csv",
+  "theme_export_path": "exports/bilibili_real_themes.csv",
+  "product_directions_export_path": "exports/bilibili_real_products.csv",
+  "top_leads_export_path": "exports/bilibili_real_top20.csv",
+  "log_path": "logs/demand_radar_bilibili_real.log",
+  "log_level": "INFO",
+  "fetch": {
+    "timeout_seconds": 20,
+    "retries": 0,
+    "backoff_seconds": 1,
+    "user_agent": "DemandRadar/0.1 (+bilibili-real)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+    "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+    "close_after_fetch": false,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 20,
+      "keywords": ["自动化", "脚本", "工具", "工作流", "监控", "提醒", "报表", "爬虫", "workflow", "automation", "script", "tool"]
+    },
+    "high_frequency": {
+      "score": 12,
+      "keywords": ["每天", "批量", "重复", "效率", "daily", "batch", "repeat", "efficient"]
+    },
+    "pain": {
+      "score": 10,
+      "keywords": ["麻烦", "低效", "崩溃", "报错", "manual", "slow", "error", "unstable"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["电商", "运营", "店铺", "订单", "库存", "对账", "表格", "数据", "excel", "dashboard", "reconcile", "inventory", "order"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "外挂", "破解", "黑产", "stolen account", "credential stuffing", "bypass"]
+    }
+  },
+  "source_score_bonus": {
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "bilibili_hot_videos_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "bilibili_hot_videos",
+      "category": "social_hot_posts",
+      "location": "https://www.bilibili.com/v/knowledge/",
+      "default_url": "https://www.bilibili.com/v/knowledge/",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "post_load_wait_ms": 6000,
+      "scroll_steps": 2,
+      "scroll_pause_ms": 1400,
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const closeButton = document.querySelector('.login-tip .close'); if (closeButton instanceof HTMLElement) { closeButton.click(); } return document.querySelectorAll('.bili-video-card.video-card').length || document.querySelectorAll('.video-card').length; }",
+          "wait_after_ms": 1200
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cards = Array.from(document.querySelectorAll('.bili-video-card.video-card, .video-card')); const seen = new Set(); const items = cards.map((card) => { const anchor = card.querySelector('a[href*=\"/video/\"]'); const titleWrap = card.querySelector('.bili-video-card__title'); const titleLink = titleWrap?.querySelector('a[href]'); const subtitleSpans = Array.from(card.querySelectorAll('.bili-video-card__subtitle span')).map((node) => normalize(node.getAttribute('title') || node.textContent)).filter(Boolean); const statSpans = Array.from(card.querySelectorAll('.bili-cover-card__stat span')).map((node) => normalize(node.textContent)).filter(Boolean); const title = normalize(titleWrap?.getAttribute('title') || titleLink?.textContent || ''); const url = toAbsoluteUrl(titleLink?.getAttribute('href') || anchor?.getAttribute('href') || anchor?.href || ''); const published = subtitleSpans.find((item) => /\\d{4}-\\d{2}-\\d{2}/.test(item)) || ''; const content = normalize([...subtitleSpans.filter((item) => item !== published), ...statSpans].filter(Boolean).join(' | ')); return { title, content, url, published_at: published.replace(/^.*?\\s*[路|]\\s*/, '') }; }).filter((item) => item.title && item.url && !seen.has(item.url) && seen.add(item.url)); return { items }; }",
+      "rendered_html_path": "logs/bilibili_hot_videos.real.rendered.html",
+      "screenshot_path": "logs/bilibili_hot_videos.real.png",
+      "extracted_json_path": "logs/bilibili_hot_videos.real.items.json",
+      "title_include_keywords": ["自动化", "脚本", "工具", "效率", "运营", "报表", "表格", "数据", "电商", "店铺", "监控", "提醒", "软件", "系统", "工作流", "教程", "AI", "创业", "副业"],
+      "title_exclude_keywords": ["鬼畜", "舞蹈", "音乐", "搞笑", "动画", "影视", "综艺", "美食", "篮球", "足球", "恋爱", "穿搭", "cos", "游戏实况"],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "bilibili_hot_comments_real",
+      "kind": "bilibili_hot_comments",
+      "category": "social_comments",
+      "seed_limit": 3,
+      "comments_per_video": 4,
+      "seed_title_include_keywords": ["开店", "店铺", "流量", "转化", "选品", "起店", "货源", "类目", "定价", "成本", "避坑", "怎么", "如何", "运营", "电商"],
+      "seed_title_exclude_keywords": ["AI", "课代表", "ComfyUI", "工作流", "教程合集", "数学", "英语", "中东", "特朗普", "战争", "考研", "历史", "影视", "音乐", "舞蹈", "游戏", "PS", "剪辑", "AE", "教程", "全攻略", "入门", "手把手", "保姆级", "零基础", "22课", "实操分享", "教学"],
+      "seed_source": {
+        "kind": "cloak_cdp_page",
+        "parse_kind": "json_state",
+        "site_kind": "bilibili_hot_videos",
+        "category": "social_hot_posts",
+        "location": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+        "default_url": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+        "pagination": {
+          "page_numbers": [1, 2],
+          "location_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}",
+          "default_url_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}"
+        },
+        "json_items_path": "items",
+        "field_map": {
+          "title": "title",
+          "content": "content",
+          "url": "url",
+          "published_at": "published_at"
+        },
+        "wait_selector": "body",
+        "wait_until": "commit",
+        "timeout_seconds": 60,
+        "post_load_wait_ms": 5500,
+        "scroll_steps": 1,
+        "scroll_pause_ms": 1000,
+        "retry_on_empty_attempts": 1,
+        "retry_on_empty_wait_ms": 2000,
+        "retry_on_empty_reset_to_blank": true,
+        "retry_on_empty_html_markers": ["bili-video-card", "/video/BV", "bili-video-card__info--tit"],
+        "page_actions": [
+          {
+            "type": "evaluate",
+            "script": "() => { const closeButton = document.querySelector('.login-tip .close'); if (closeButton instanceof HTMLElement) { closeButton.click(); } return document.querySelectorAll('a[href*=\"/video/BV\"]').length; }",
+            "wait_after_ms": 1200
+          }
+        ],
+        "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cards = Array.from(document.querySelectorAll('.video-list-item .bili-video-card, .bili-video-card')); const seen = new Set(); const items = []; for (const card of cards) { const infoAnchor = card.querySelector('.bili-video-card__info--right a[href*=\"/video/BV\"]'); const fallbackAnchor = card.querySelector('a[href*=\"/video/BV\"]'); const anchor = infoAnchor || fallbackAnchor; const url = toAbsoluteUrl(anchor?.getAttribute('href') || anchor?.href || ''); if (!url || !/\\/video\\/BV/i.test(url) || seen.has(url)) { continue; } const titleNode = card.querySelector('.bili-video-card__info--tit'); const imageNode = card.querySelector('picture img[alt]'); const title = normalize(titleNode?.getAttribute('title') || titleNode?.textContent || imageNode?.getAttribute('alt') || anchor?.getAttribute('title') || ''); if (!title) { continue; } const metaNodes = Array.from(card.querySelectorAll('.bili-video-card__info--bottom, .bili-video-card__stats')); const metaText = normalize(metaNodes.map((node) => normalize(node.textContent)).filter(Boolean).join(' | ')); items.push({ title, content: metaText.slice(0, 240), url, published_at: '' }); seen.add(url); } return { items }; }",
+        "rendered_html_path": "logs/bilibili_hot_comment_seeds.real.rendered.html",
+        "screenshot_path": "logs/bilibili_hot_comment_seeds.real.png",
+        "extracted_json_path": "logs/bilibili_hot_comment_seeds.real.items.json",
+        "title_include_keywords": ["开店", "店铺", "流量", "转化", "选品", "起店", "货源", "类目", "定价", "成本", "避坑", "怎么", "如何", "运营", "电商"],
+        "title_exclude_keywords": ["AI", "课代表", "ComfyUI", "工作流", "教程合集", "数学", "英语", "中东", "特朗普", "战争", "考研", "历史", "影视", "音乐", "舞蹈", "游戏", "PS", "剪辑", "AE", "教程", "全攻略", "入门", "手把手", "保姆级", "零基础", "22课", "实操分享", "教学"],
+        "max_items": 12,
+        "cloak": {
+          "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+          "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+          "close_after_fetch": false
+        }
+      },
+      "comment_wait_selector": "body",
+      "comment_wait_until": "domcontentloaded",
+      "comment_post_load_wait_ms": 7000,
+      "comment_scroll_steps": 6,
+      "comment_scroll_pause_ms": 1500,
+      "comment_response_body_max_chars": 120000,
+      "comment_network_log_template": "logs/bilibili_hot_comments.real.video_{video_index}.network.json",
+      "comment_rendered_html_template": "logs/bilibili_hot_comments.real.video_{video_index}.rendered.html",
+      "comment_screenshot_template": "logs/bilibili_hot_comments.real.video_{video_index}.png",
+      "comment_question_keywords": ["怎么", "如何", "有没有", "请教", "请问", "想问", "怎样", "怎么样", "区别", "为什么", "避坑", "全包", "退店", "类目"],
+      "comment_business_keywords": ["电商", "运营", "开店", "店铺", "订单", "流量", "转化", "选品", "起店", "货源", "类目", "定价", "发货", "售后", "带货", "表格", "数据", "商品", "商家"],
+      "comment_text_exclude_keywords": ["打卡", "路过", "来了", "支持一个", "哈哈", "AI课代表", "内容由@AI视频总结", "仅供参考", "总结：", "课代表总结", "求资料", "求学习资料", "球球资料", "一键三连", "已三连", "已关注", "老师讲的很细", "求发一下资料"],
+      "comment_author_exclude_keywords": ["ai", "课代表", "课程教学"],
+      "comment_max_message_length": 120,
+      "title_exclude_keywords": ["哈哈", "支持", "打卡", "来了", "路过"],
+      "max_items": 8,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    }
+  ]
+}

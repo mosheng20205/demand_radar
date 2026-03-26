@@ -1,0 +1,82 @@
+{
+  "database_path": "data/xiaohongshu_sample.db",
+  "min_score": 10,
+  "notify_min_score": 40,
+  "export_path": "exports/xiaohongshu_sample.csv",
+  "health_export_path": "exports/xiaohongshu_sample_health.csv",
+  "product_directions_export_path": "exports/xiaohongshu_sample_products.csv",
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 20,
+      "keywords": ["怎么", "如何", "有没有", "能不能", "留资", "私域", "线索", "跟进"]
+    },
+    "high_frequency": {
+      "score": 12,
+      "keywords": ["每天", "重复", "批量", "汇总", "提醒", "私信"]
+    },
+    "pain": {
+      "score": 10,
+      "keywords": ["太慢", "麻烦", "手动", "漏掉", "重复", "踩坑"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["表格", "汇总", "去重", "提醒", "运营", "数据", "同步", "私域"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "黑产", "破解", "stolen account", "credential stuffing"]
+    }
+  },
+  "source_score_bonus": {
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "xiaohongshu_hot_notes_sample",
+      "kind": "json",
+      "site_kind": "xiaohongshu_hot_notes",
+      "category": "social_hot_posts",
+      "location": "samples/xiaohongshu_hot_notes.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["小红书", "私域", "线索", "表格", "汇总", "提醒", "运营", "数据"],
+      "max_items": 20
+    },
+    {
+      "name": "xiaohongshu_hot_comments_sample",
+      "kind": "json",
+      "site_kind": "xiaohongshu_hot_comments",
+      "category": "social_comments",
+      "location": "samples/xiaohongshu_hot_comments.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["怎么", "如何", "有没有", "能不能", "留资", "私域", "线索", "表格", "提醒"],
+      "max_items": 20
+    }
+  ]
+}

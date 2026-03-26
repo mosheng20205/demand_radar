@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Sample Comments</title>
+    <item>
+      <title>这个掉线问题太麻烦了，有没有自动提醒工具</title>
+      <link>https://example.com/comments/1</link>
+      <description>我们每天都要重新检查店铺登录状态，求一个脚本或者工具。</description>
+      <pubDate>Tue, 24 Mar 2026 09:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>想找人代做一个批量导出脚本</title>
+      <link>https://example.com/comments/2</link>
+      <description>预算可谈，主要是把多店铺后台的数据自动导出汇总。</description>
+      <pubDate>Tue, 24 Mar 2026 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

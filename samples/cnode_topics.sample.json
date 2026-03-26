@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "6972deb2cd2d715d2e2cfbbd",
+      "tab": "job",
+      "title": "[杭州] 阿里云数据可视化 DataV 团队招聘 AI 应用开发工程师",
+      "content": "<div class=\"markdown-text\"><p>负责 AI 应用与 Agent 工程平台的服务端研发，构建支撑多模型、多智能体场景部署的 AI 平台基础能力。</p></div>",
+      "create_at": "2026-01-23T02:36:34.665Z",
+      "reply_count": 0,
+      "visit_count": 187,
+      "author": {
+        "loginname": "rockdai"
+      }
+    },
+    {
+      "id": "6690cdf6fc5c3b60d1ee91ec",
+      "tab": "job",
+      "title": "【成都】盯潮科技-数据工程师 3名",
+      "content": "<div class=\"markdown-text\"><p>参与设计和开发分布式爬虫系统，搭建通用爬虫监控、消息推送分布式系统。</p></div>",
+      "create_at": "2024-07-12T06:32:22.176Z",
+      "reply_count": 0,
+      "visit_count": 1045,
+      "author": {
+        "loginname": "zhaopin"
+      }
+    }
+  ]
+}

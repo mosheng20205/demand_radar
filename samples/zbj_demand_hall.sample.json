@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "title": "求一个店铺订单自动汇总和日报提醒工具",
+      "content": "每天需要汇总多个店铺订单，导出报表并推送企业微信，要求支持异常提醒，预算可谈。",
+      "budget": "3000-8000元",
+      "employerName": "杭州某电商团队",
+      "city": "杭州",
+      "deadline": "7天内交付",
+      "url": "https://example.com/zbj-demand/1001",
+      "published_at": "2026-03-25 09:00:00"
+    },
+    {
+      "title": "需要定制 ERP 对账脚本，支持批量导出和差异比对",
+      "content": "已有 Excel 流程，人工对账太慢，希望做成自动化脚本或桌面工具，最好能每天定时执行。",
+      "budget": "5000元起",
+      "employerName": "深圳跨境运营团队",
+      "city": "深圳",
+      "deadline": "10天",
+      "url": "https://example.com/zbj-demand/1002",
+      "published_at": "2026-03-25 10:00:00"
+    }
+  ]
+}

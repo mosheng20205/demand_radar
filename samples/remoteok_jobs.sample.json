@@ -1,0 +1,34 @@
+[
+  {
+    "last_updated": 1774512008,
+    "legal": "API Terms of Service"
+  },
+  {
+    "slug": "remote-security-engineer-ii-canada-nerdwallet-1130860",
+    "id": "1130860",
+    "date": "2026-03-22T08:00:02+00:00",
+    "company": "NerdWallet",
+    "position": "Security Engineer II Canada",
+    "tags": ["security", "python", "dashboard", "operations"],
+    "description": "Build tools, processes, and automation that improve security posture visibility for engineers and leadership.",
+    "location": "Remote",
+    "apply_url": "https://remoteOK.com/remote-jobs/remote-security-engineer-ii-canada-nerdwallet-1130860",
+    "salary_min": 123000,
+    "salary_max": 188000,
+    "url": "https://remoteOK.com/remote-jobs/remote-security-engineer-ii-canada-nerdwallet-1130860"
+  },
+  {
+    "slug": "remote-product-manager-api-platform-descript-1129883",
+    "id": "1129883",
+    "date": "2026-01-30T16:00:43+00:00",
+    "company": "Descript",
+    "position": "Product Manager API & Platform",
+    "tags": ["api", "platform", "workflow", "automation"],
+    "description": "Own the API and developer experience that lets teams create content workflows at scale.",
+    "location": "San Francisco",
+    "apply_url": "https://remoteOK.com/remote-jobs/remote-product-manager-api-platform-descript-1129883",
+    "salary_min": 0,
+    "salary_max": 0,
+    "url": "https://remoteOK.com/remote-jobs/remote-product-manager-api-platform-descript-1129883"
+  }
+]

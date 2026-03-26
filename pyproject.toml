@@ -1,0 +1,11 @@
+[project]
+name = "demand-radar"
+version = "0.1.0"
+description = "A minimal demand radar MVP for collecting and scoring public demand signals."
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.54,<2",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

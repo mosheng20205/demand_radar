@@ -1,0 +1,205 @@
+{
+  "database_path": "data/xiaohongshu_real.db",
+  "min_score": 10,
+  "notify_min_score": 999,
+  "export_path": "exports/xiaohongshu_real.csv",
+  "health_export_path": "exports/xiaohongshu_real_health.csv",
+  "product_directions_export_path": "exports/xiaohongshu_real_products.csv",
+  "top_leads_export_path": "exports/xiaohongshu_real_top20.csv",
+  "log_path": "logs/demand_radar_xiaohongshu_real.log",
+  "log_level": "INFO",
+  "fetch": {
+    "timeout_seconds": 20,
+    "retries": 0,
+    "backoff_seconds": 1,
+    "user_agent": "DemandRadar/0.1 (+xiaohongshu-real)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+    "profile_name": "小红书专用浏览器",
+    "close_after_fetch": false,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 20,
+      "keywords": ["怎么", "如何", "有没有", "能不能", "留资", "私域", "线索", "表单", "自动", "抓取", "监控"]
+    },
+    "high_frequency": {
+      "score": 12,
+      "keywords": ["每天", "重复", "批量", "汇总", "同步", "提醒"]
+    },
+    "pain": {
+      "score": 10,
+      "keywords": ["麻烦", "低效", "手动", "漏掉", "混乱", "来不及"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["数据", "表格", "提醒", "运营", "线索", "私域", "表单", "客户", "转化"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "黑产", "破解", "stolen account", "credential stuffing"]
+    }
+  },
+  "source_score_bonus": {
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "xiaohongshu_hot_notes_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "xiaohongshu_hot_notes",
+      "category": "social_hot_posts",
+      "location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 3,
+      "scroll_pause_ms": 1800,
+      "retry_on_empty_attempts": 2,
+      "retry_on_empty_wait_ms": 2000,
+      "retry_on_empty_reset_to_blank": true,
+      "retry_on_empty_html_markers": ["search_result", "explore", "note-item", "小红书"],
+      "capture_network": true,
+      "capture_response_body": true,
+      "response_body_max_chars": 300000,
+      "capture_resource_types": ["xhr", "fetch", "document"],
+      "capture_url_patterns": ["/api/sns/web/v1/search/", "/api/sns/web/v1/feed", "/api/sns/web/v1/homefeed"],
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const texts = ['同意', '知道了', '稍后再说', '下次再说']; for (const text of texts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } const closeSelectors = ['[class*=\"close\"]', '[aria-label=\"关闭\"]', '.close']; for (const selector of closeSelectors) { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+          "wait_after_ms": 1500
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const selectors = ['a[href*=\"/explore/\"]', 'a[href*=\"/discovery/item/\"]', 'section.note-item', '[class*=\"note-item\"]']; const rawNodes = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))); const seen = new Set(); const items = []; for (const node of rawNodes) { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href*=\"/explore/\"], a[href*=\"/discovery/item/\"]'); if (!(anchor instanceof HTMLAnchorElement)) { continue; } const url = toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || ''); if (!url || (!url.includes('/explore/') && !url.includes('/discovery/item/')) || seen.has(url)) { continue; } const card = (anchor.closest('section') || anchor.closest('div') || anchor); const titleCandidates = [card.querySelector('[class*=\"title\"]'), card.querySelector('img[alt]'), anchor.querySelector('[class*=\"title\"]'), anchor]; const title = normalize(titleCandidates.map((item) => item instanceof HTMLElement ? (item.getAttribute('alt') || item.getAttribute('title') || item.textContent || '') : '').find(Boolean) || ''); const contentCandidates = Array.from(card.querySelectorAll('[class*=\"desc\"], [class*=\"content\"], [class*=\"text\"], [class*=\"name\"], [class*=\"info\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const content = normalize(contentCandidates.join(' | ') || card.textContent || ''); if (!title) { continue; } items.push({ title, content: content.slice(0, 280), url, published_at: '' }); seen.add(url); } return { items }; }",
+      "network_log_path": "logs/xiaohongshu_hot_notes.real.network.json",
+      "rendered_html_path": "logs/xiaohongshu_hot_notes.real.rendered.html",
+      "screenshot_path": "logs/xiaohongshu_hot_notes.real.png",
+      "extracted_json_path": "logs/xiaohongshu_hot_notes.real.items.json",
+      "title_include_keywords": ["小红书", "私域", "留资", "表单", "线索", "自动", "运营", "客户", "数据"],
+      "title_exclude_keywords": ["穿搭", "美妆", "旅游", "探店", "减肥", "恋爱", "穿衣", "发型"],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+        "profile_name": "小红书专用浏览器",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "xiaohongshu_hot_comments_real",
+      "kind": "xiaohongshu_hot_comments",
+      "site_kind": "xiaohongshu_hot_comments",
+      "category": "social_comments",
+      "seed_source_name": "xiaohongshu_hot_notes_real",
+      "seed_limit": 3,
+      "comments_per_note": 5,
+      "search_location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "search_default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "seed_source": {
+        "name": "xiaohongshu_hot_notes_smoke_seed",
+        "kind": "cloak_cdp_page",
+        "parse_kind": "json_state",
+        "site_kind": "xiaohongshu_hot_notes",
+        "category": "social_hot_posts",
+        "location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+        "default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+        "json_items_path": "items",
+        "field_map": {
+          "title": "title",
+          "content": "content",
+          "url": "url",
+          "published_at": "published_at"
+        },
+        "wait_selector": "body",
+        "wait_until": "domcontentloaded",
+        "timeout_seconds": 45,
+        "post_load_wait_ms": 7000,
+        "scroll_steps": 2,
+        "scroll_pause_ms": 1500,
+        "retry_on_empty_attempts": 1,
+        "retry_on_empty_wait_ms": 2000,
+        "retry_on_empty_reset_to_blank": true,
+        "retry_on_empty_html_markers": ["search_result", "explore", "note-item", "小红书"],
+        "capture_network": true,
+        "capture_response_body": true,
+        "response_body_max_chars": 150000,
+        "capture_resource_types": ["xhr", "fetch", "document"],
+        "capture_url_patterns": ["/api/sns/web/v1/search/"],
+        "page_actions": [
+          {
+            "type": "evaluate",
+            "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const texts = ['同意', '知道了', '稍后再说', '下次再说']; for (const text of texts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } const closeSelectors = ['[class*=\"close\"]', '[aria-label=\"关闭\"]', '.close']; for (const selector of closeSelectors) { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+            "wait_after_ms": 1200
+          }
+        ],
+        "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const selectors = ['a[href*=\"/explore/\"]', 'a[href*=\"/discovery/item/\"]', 'section.note-item', '[class*=\"note-item\"]']; const rawNodes = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))); const seen = new Set(); const items = []; for (const node of rawNodes) { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href*=\"/explore/\"], a[href*=\"/discovery/item/\"]'); if (!(anchor instanceof HTMLAnchorElement)) { continue; } const url = toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || ''); if (!url || (!url.includes('/explore/') && !url.includes('/discovery/item/')) || seen.has(url)) { continue; } const card = (anchor.closest('section') || anchor.closest('div') || anchor); const titleCandidates = [card.querySelector('[class*=\"title\"]'), card.querySelector('img[alt]'), anchor.querySelector('[class*=\"title\"]'), anchor]; const title = normalize(titleCandidates.map((item) => item instanceof HTMLElement ? (item.getAttribute('alt') || item.getAttribute('title') || item.textContent || '') : '').find(Boolean) || ''); const contentCandidates = Array.from(card.querySelectorAll('[class*=\"desc\"], [class*=\"content\"], [class*=\"text\"], [class*=\"name\"], [class*=\"info\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const content = normalize(contentCandidates.join(' | ') || card.textContent || ''); if (!title) { continue; } items.push({ title, content: content.slice(0, 280), url, published_at: '' }); seen.add(url); if (items.length >= 5) { break; } } return { items }; }",
+        "network_log_path": "logs/xiaohongshu_hot_comments.seed.network.json",
+        "rendered_html_path": "logs/xiaohongshu_hot_comments.seed.rendered.html",
+        "screenshot_path": "logs/xiaohongshu_hot_comments.seed.png",
+        "extracted_json_path": "logs/xiaohongshu_hot_comments.seed.items.json",
+        "max_items": 5,
+        "cloak": {
+          "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+          "profile_name": "小红书专用浏览器",
+          "close_after_fetch": false
+        }
+      },
+      "seed_title_include_keywords": ["私域", "留资", "表单", "线索", "客户", "转化"],
+      "seed_title_exclude_keywords": ["穿搭", "美妆", "旅游", "探店", "减肥", "恋爱", "发型"],
+      "comment_wait_selector": "body",
+      "comment_wait_until": "domcontentloaded",
+      "comment_timeout_seconds": 60,
+      "comment_post_load_wait_ms": 6500,
+      "comment_scroll_steps": 1,
+      "comment_scroll_pause_ms": 1200,
+      "comment_click_wait_ms": 3500,
+      "comment_scroll_wait_ms": 2200,
+      "comment_click_selector": "[data-radar-note-target='1'] .cover, [data-radar-note-target='1'] [class*='cover'], [data-radar-note-target='1']",
+      "comment_response_body_max_chars": 150000,
+      "comment_network_log_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.network.json",
+      "comment_rendered_html_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.rendered.html",
+      "comment_screenshot_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.png",
+      "comment_extracted_json_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.items.json",
+      "comment_min_message_length": 2,
+      "content_include_keywords": ["绉佸煙", "鐣欒祫", "琛ㄥ崟", "绾跨储", "瀹㈡埛", "杞寲"],
+      "title_include_keywords": ["怎么", "如何", "有没有", "能不能", "私域", "留资", "表单", "线索", "客户", "转化"],
+      "title_exclude_keywords": ["哈哈", "打卡", "路过", "已关注", "支持一下"],
+      "content_exclude_keywords": ["穿搭", "美妆", "旅游", "探店"],
+      "max_items": 10,
+      "cloak": {
+        "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+        "profile_name": "小红书专用浏览器",
+        "close_after_fetch": false
+      }
+    }
+  ]
+}

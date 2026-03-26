@@ -1,0 +1,122 @@
+{
+  "database_path": "data/cloak_demo.db",
+  "min_score": 20,
+  "notify_min_score": 45,
+  "export_path": "exports/cloak_leads.csv",
+  "health_export_path": "exports/cloak_source_health.csv",
+  "top_leads_export_path": "exports/cloak_top20_leads.csv",
+  "theme_export_path": "exports/cloak_opportunity_themes.csv",
+  "product_directions_export_path": "exports/cloak_product_directions.csv",
+  "product_directions_limit": 5,
+  "log_path": "logs/demand_radar_cloak.log",
+  "log_level": "INFO",
+  "fetch": {
+    "timeout_seconds": 12,
+    "retries": 1,
+    "backoff_seconds": 2,
+    "user_agent": "DemandRadar/0.2 (+cloak-cdp)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+    "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}",
+    "close_after_fetch": true,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": {
+      "enabled": false,
+      "webhook_url": "${DEMAND_RADAR_WECOM_WEBHOOK}"
+    },
+    "feishu": {
+      "enabled": false,
+      "webhook_url": "${DEMAND_RADAR_FEISHU_WEBHOOK}"
+    },
+    "email": {
+      "enabled": false,
+      "host": "${DEMAND_RADAR_EMAIL_HOST}",
+      "port": "${DEMAND_RADAR_EMAIL_PORT}",
+      "username": "${DEMAND_RADAR_EMAIL_USERNAME}",
+      "password": "${DEMAND_RADAR_EMAIL_PASSWORD}",
+      "from_addr": "${DEMAND_RADAR_EMAIL_FROM}",
+      "to_addrs": ["${DEMAND_RADAR_EMAIL_TO}"],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": ["求代做", "求购买", "求脚本", "求工具", "悬赏", "接定制", "有没有现成方案", "need help", "custom tool", "looking for alternative", "looking for tool", "looking for script"]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": ["每天", "经常", "批量", "自动", "一直", "老是", "反复", "every day", "often", "batch", "automate", "repeatedly", "daily", "bulk"]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": ["太贵", "太麻烦", "掉线", "不稳定", "报错", "效率太低", "麻烦", "不好用", "卡顿", "漏掉", "too expensive", "painful", "unstable", "slow", "hard to use", "errors", "hard to troubleshoot", "manual", "time-consuming"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["监控", "提醒", "导出", "对账", "归档", "去重", "汇总", "同步", "匹配", "转换", "monitor", "alert", "export", "reconcile", "archive", "dedupe", "sync", "dashboard", "report", "notification"]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": ["预算", "报价", "多少钱", "付费", "年费", "月费", "价格", "price", "pricing", "monthly", "annual"]
+    },
+    "ecommerce_ops": {
+      "score": 14,
+      "keywords": ["店铺", "订单", "售后", "库存", "上架", "多店铺", "客服", "日报", "对账", "商家", "商品", "运营", "erp", "crm", "inventory", "order", "merchant"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "撞库", "绕过支付", "隐私窃取", "黑产", "洗号", "stolen account", "credential stuffing", "bypass payment"]
+    }
+  },
+  "source_score_bonus": {
+    "service_titles": 15
+  },
+  "sources": [
+    {
+      "name": "zbj_logged_service_detail",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "html_text_regex",
+      "site_kind": "zbj_service_detail",
+      "category": "service_titles",
+      "location": "https://www.zbj.com/fw/2237502.html",
+      "default_url": "https://www.zbj.com/fw/2237502.html",
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "post_load_wait_ms": 2500,
+      "scroll_steps": 1,
+      "scroll_pause_ms": 1200,
+      "rendered_html_path": "logs/zbj_service_detail.rendered.html",
+      "screenshot_path": "logs/zbj_service_detail.png",
+      "title_include_keywords": ["软件", "开发", "系统", "自动", "对账", "商城", "数据", "报表", "管理", "小程序"],
+      "title_exclude_keywords": ["logo", "包装", "平面", "商标", "海报"]
+    },
+    {
+      "name": "zbj_logged_script_search",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "zbj_search_state",
+      "category": "service_titles",
+      "search_keyword": "脚本开发",
+      "location": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+      "default_url": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "post_load_wait_ms": 4000,
+      "scroll_steps": 2,
+      "scroll_pause_ms": 1500,
+      "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+      "rendered_html_path": "logs/zbj_script_search.rendered.html",
+      "screenshot_path": "logs/zbj_script_search.png",
+      "extracted_json_path": "logs/zbj_script_search.result_list.json",
+      "title_include_keywords": ["脚本", "自动", "python", "开发", "数据", "爬虫", "报表", "对账", "系统", "工具"],
+      "title_exclude_keywords": ["logo", "包装", "海报", "商标", "vi设计"]
+    }
+  ]
+}

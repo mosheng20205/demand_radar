@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "title": "我把每天 2 小时的手工报表做成了自动化脚本",
+      "content": "热门工具演示视频，讲的是多店铺订单导出、汇总、日报提醒和企业微信通知。",
+      "url": "https://www.bilibili.com/video/BV1demo1",
+      "published_at": "2026-03-25 13:00:00"
+    },
+    {
+      "title": "电商运营每天都在做的 5 个重复动作，怎么自动化",
+      "content": "热门教程视频，包含订单监控、库存预警、对账和日报生成的实操场景。",
+      "url": "https://www.bilibili.com/video/BV1demo2",
+      "published_at": "2026-03-25 13:30:00"
+    }
+  ]
+}

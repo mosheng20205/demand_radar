@@ -1,0 +1,97 @@
+{
+  "database_path": "data/demand_radar.db",
+  "min_score": 20,
+  "notify_min_score": 40,
+  "export_path": "exports/leads.csv",
+  "schedule": {
+    "interval_seconds": 1800
+  },
+  "notifications": {
+    "wecom": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "feishu": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": ["求代做", "求购买", "求脚本", "求工具", "悬赏", "接定制", "need help", "custom tool"]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": ["每天", "经常", "批量", "自动", "一直", "老是", "every day", "often", "batch", "automate"]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": ["太贵", "太麻烦", "掉线", "不稳定", "报错", "效率太低", "麻烦", "too expensive", "painful", "unstable", "errors", "hard to troubleshoot"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["监控", "提醒", "导出", "对账", "归档", "去重", "汇总", "同步", "匹配", "转换", "monitor", "alert", "export", "reconcile", "dedupe", "sync"]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": ["预算", "报价", "多少钱", "付费", "年费", "月费", "budget", "price", "pricing", "monthly", "annual"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "撞库", "绕过支付", "隐私窃取", "黑产", "洗号", "stolen account", "credential stuffing", "bypass payment"]
+    }
+  },
+  "source_score_bonus": {
+    "self_comments": 20,
+    "forum_posts": 12,
+    "service_titles": 15
+  },
+  "sources": [
+    {
+      "name": "sample_comments",
+      "kind": "rss",
+      "category": "self_comments",
+      "location": "samples/comments_feed.xml"
+    },
+    {
+      "name": "sample_posts",
+      "kind": "json",
+      "category": "forum_posts",
+      "location": "samples/posts_feed.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      }
+    },
+    {
+      "name": "sample_services",
+      "kind": "html_links",
+      "category": "service_titles",
+      "location": "samples/services.html",
+      "base_url": "https://example.com"
+    },
+    {
+      "name": "sample_reviews",
+      "kind": "html_text_regex",
+      "category": "review_pages",
+      "location": "samples/reviews.html",
+      "base_url": "https://example.com",
+      "item_pattern": "\"(?P<title>[^\"]+)\"\\s+Posted\\s+\\d{4}-\\d{2}-\\d{2}\\s+Pros:\\s*(?P<pros>.*?)\\s+Cons:\\s*(?P<cons>.*?)\\s+Overall:\\s*(?P<overall>.*?)(?:Read More|$)",
+      "default_url": "https://example.com/reviews"
+    }
+  ]
+}

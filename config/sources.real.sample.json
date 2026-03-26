@@ -1,0 +1,2082 @@
+{
+  "database_path": "data/demand_radar.db",
+  "min_score": 20,
+  "notify_min_score": 45,
+  "export_path": "exports/leads.real.csv",
+  "health_export_path": "exports/source_health.csv",
+  "product_directions_export_path": "exports/product_directions.csv",
+  "product_directions_limit": 5,
+  "log_path": "logs/demand_radar.log",
+  "log_level": "INFO",
+  "failure_control": {
+    "alert_threshold": 3,
+    "cooldown_minutes": 180,
+    "backoff_multiplier": 2.0
+  },
+  "daily_summary": {
+    "enabled": true,
+    "hour_local": 21
+  },
+  "notification_filters": {
+    "zbj_service_min_sales": 20
+  },
+  "fetch": {
+    "timeout_seconds": 20,
+    "retries": 2,
+    "backoff_seconds": 2,
+    "user_agent": "DemandRadar/0.1 (+public-source-monitor)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+    "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}",
+    "close_after_fetch": false,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": {
+      "enabled": true,
+      "webhook_url": "${DEMAND_RADAR_WECOM_WEBHOOK}"
+    },
+    "feishu": {
+      "enabled": false,
+      "webhook_url": "${DEMAND_RADAR_FEISHU_WEBHOOK}"
+    },
+    "email": {
+      "enabled": false,
+      "host": "${DEMAND_RADAR_EMAIL_HOST}",
+      "port": "${DEMAND_RADAR_EMAIL_PORT}",
+      "username": "${DEMAND_RADAR_EMAIL_USERNAME}",
+      "password": "${DEMAND_RADAR_EMAIL_PASSWORD}",
+      "from_addr": "${DEMAND_RADAR_EMAIL_FROM}",
+      "to_addrs": [
+        "${DEMAND_RADAR_EMAIL_TO}"
+      ],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": [
+        "求代做",
+        "求购买",
+        "求脚本",
+        "求工具",
+        "悬赏",
+        "接定制",
+        "有没有现成方案",
+        "怎么",
+        "如何",
+        "有没有",
+        "能不能",
+        "什么",
+        "是不是",
+        "侵权",
+        "need help",
+        "custom tool",
+        "looking for alternative",
+        "looking for tool",
+        "looking for script"
+      ]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": [
+        "每天",
+        "经常",
+        "批量",
+        "自动",
+        "一直",
+        "老是",
+        "反复",
+        "every day",
+        "often",
+        "batch",
+        "automate",
+        "repeatedly",
+        "daily",
+        "bulk"
+      ]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": [
+        "太贵",
+        "太麻烦",
+        "掉线",
+        "不稳定",
+        "报错",
+        "效率太低",
+        "麻烦",
+        "不好用",
+        "卡顿",
+        "漏掉",
+        "不够精准",
+        "没有入池",
+        "侵权",
+        "too expensive",
+        "painful",
+        "unstable",
+        "slow",
+        "hard to use",
+        "errors",
+        "hard to troubleshoot",
+        "scattered",
+        "manual",
+        "time-consuming",
+        "too many clicks"
+      ]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": [
+        "监控",
+        "提醒",
+        "导出",
+        "对账",
+        "归档",
+        "去重",
+        "汇总",
+        "同步",
+        "匹配",
+        "转换",
+        "运营",
+        "流量",
+        "转化",
+        "工具",
+        "关联",
+        "入池",
+        "价格",
+        "成本",
+        "利润",
+        "投流",
+        "1688",
+        "分销",
+        "monitor",
+        "alert",
+        "export",
+        "reconcile",
+        "archive",
+        "dedupe",
+        "sync",
+        "match",
+        "convert",
+        "dashboard",
+        "report",
+        "notification"
+      ]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": [
+        "预算",
+        "报价",
+        "多少钱",
+        "付费",
+        "年费",
+        "月费",
+        "价格",
+        "budget",
+        "price",
+        "pricing",
+        "monthly",
+        "annual"
+      ]
+    },
+    "ecommerce_ops": {
+      "score": 14,
+      "keywords": [
+        "店铺",
+        "抖店",
+        "订单",
+        "售后",
+        "库存",
+        "上架",
+        "多店铺",
+        "客服",
+        "日报",
+        "对账",
+        "店群",
+        "商家",
+        "商品",
+        "运营",
+        "类目",
+        "货盘",
+        "选品",
+        "货源",
+        "供应链",
+        "一件代发",
+        "起店",
+        "精选联盟",
+        "投流",
+        "erp",
+        "crm",
+        "workflow",
+        "inventory",
+        "order",
+        "ticket",
+        "merchant"
+      ]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": [
+        "盗号",
+        "撞库",
+        "绕过支付",
+        "隐私窃取",
+        "黑产",
+        "洗号",
+        "stolen account",
+        "credential stuffing",
+        "bypass payment"
+      ]
+    }
+  },
+  "source_score_bonus": {
+    "demand_market": 18,
+    "forum_posts": 12,
+    "job_posts": 16,
+    "procurement_posts": 22,
+    "review_pages": 15,
+    "service_titles": 15,
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "sourceforge_zapier_reviews",
+      "kind": "html_text_regex",
+      "site_kind": "sourceforge_reviews",
+      "category": "review_pages",
+      "location": "https://sourceforge.net/software/product/Zapier/",
+      "default_url": "https://sourceforge.net/software/product/Zapier/",
+      "title_include_keywords": [
+        "expensive",
+        "painful",
+        "hard",
+        "automation",
+        "workflow",
+        "error",
+        "slow",
+        "manual",
+        "integration",
+        "complex"
+      ],
+      "max_items": 12,
+      "fetch": {
+        "timeout_seconds": 8,
+        "retries": 0
+      }
+    },
+    {
+      "name": "sourceforge_zoho_crm_reviews",
+      "kind": "html_text_regex",
+      "site_kind": "sourceforge_reviews",
+      "category": "review_pages",
+      "location": "https://sourceforge.net/software/product/Zoho-CRM/",
+      "default_url": "https://sourceforge.net/software/product/Zoho-CRM/",
+      "title_include_keywords": [
+        "crm",
+        "mobile",
+        "workflow",
+        "lead",
+        "report",
+        "slow",
+        "hard",
+        "dashboard",
+        "automation",
+        "expensive"
+      ],
+      "max_items": 12,
+      "fetch": {
+        "timeout_seconds": 8,
+        "retries": 0
+      }
+    },
+    {
+      "name": "sourceforge_hubspot_reviews",
+      "kind": "html_text_regex",
+      "site_kind": "sourceforge_reviews",
+      "category": "review_pages",
+      "location": "https://sourceforge.net/software/product/HubSpot-CRM/",
+      "default_url": "https://sourceforge.net/software/product/HubSpot-CRM/",
+      "title_include_keywords": [
+        "crm",
+        "automation",
+        "expensive",
+        "workflow",
+        "lead",
+        "report",
+        "pipeline",
+        "dashboard",
+        "complex"
+      ],
+      "max_items": 12,
+      "fetch": {
+        "timeout_seconds": 8,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_demand_hall_live",
+      "kind": "html_text_regex",
+      "site_kind": "zbj_demand_hall",
+      "category": "demand_market",
+      "location": "https://www.zbj.com/xq/",
+      "default_url": "https://www.zbj.com/xq/",
+      "detail_url_template": "https://www.zbj.com/xq/{id}.html",
+      "require_tech_demand": true,
+      "tech_positive_keywords": [
+        "网站",
+        "网站开发",
+        "网站建设",
+        "网站二次开发",
+        "小程序",
+        "APP",
+        "软件",
+        "系统",
+        "脚本",
+        "自动",
+        "自动化",
+        "表格",
+        "Excel",
+        "数据",
+        "图表",
+        "报表",
+        "接口",
+        "API",
+        "OCR",
+        "识别",
+        "CMS",
+        "ERP",
+        "CRM",
+        "管理",
+        "后台",
+        "管理后台",
+        "SaaS",
+        "采集",
+        "爬虫",
+        "对账",
+        "同步",
+        "监控",
+        "提醒",
+        "工具",
+        "工作流",
+        "流程"
+      ],
+      "tech_negative_keywords": [
+        "logo",
+        "LOGO",
+        "剪辑",
+        "视频",
+        "P图",
+        "修图",
+        "海报",
+        "包装",
+        "商标",
+        "取名",
+        "作图",
+        "摄影",
+        "配音",
+        "动画",
+        "插画",
+        "漫画",
+        "美工",
+        "原画",
+        "建模"
+      ],
+      "title_include_keywords": [
+        "网站",
+        "小程序",
+        "软件",
+        "系统",
+        "开发",
+        "表格",
+        "识别",
+        "图表",
+        "数据",
+        "报表",
+        "接口",
+        "API",
+        "OCR",
+        "ERP",
+        "CRM",
+        "脚本",
+        "自动",
+        "自动化",
+        "后台",
+        "SaaS",
+        "采集",
+        "爬虫",
+        "对账",
+        "同步",
+        "监控",
+        "提醒",
+        "工具",
+        "修复",
+        "维护",
+        "功能",
+        "商城",
+        "记账",
+        "平台",
+        "Java",
+        "Python",
+        "云开发"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "剪辑",
+        "P图",
+        "修图",
+        "海报",
+        "包装",
+        "商标",
+        "取名",
+        "作图",
+        "设计师",
+        "摄影",
+        "配音",
+        "动画",
+        "插画",
+        "漫画",
+        "原画",
+        "建模",
+        "UI设计",
+        "APP UI",
+        "网页美工",
+        "美工",
+        "平面广告设计",
+        "短视频",
+        "后期",
+        "PDF文件填写",
+        "填写到表格",
+        "录入表格"
+      ],
+      "content_include_keywords": [
+        "网站",
+        "小程序",
+        "软件",
+        "系统",
+        "表格",
+        "数据",
+        "图表",
+        "识别",
+        "接口",
+        "管理",
+        "CMS",
+        "ERP",
+        "CRM",
+        "自动",
+        "自动化",
+        "后台",
+        "SaaS",
+        "采集",
+        "爬虫",
+        "对账",
+        "同步",
+        "监控",
+        "提醒",
+        "工具",
+        "工作流",
+        "流程",
+        "报表",
+        "导出",
+        "修复",
+        "维护",
+        "功能",
+        "商城",
+        "记账",
+        "平台",
+        "Java",
+        "Python",
+        "云开发"
+      ],
+      "content_exclude_keywords": [
+        "logo",
+        "剪辑",
+        "视频",
+        "修图",
+        "海报",
+        "包装",
+        "商标",
+        "配音",
+        "摄影",
+        "动画",
+        "插画",
+        "漫画",
+        "原画",
+        "建模",
+        "已完结",
+        "PDF文件填写",
+        "填写到表格",
+        "录入表格"
+      ],
+      "tech_positive_category_keywords": [
+        "网站开发",
+        "网站二次开发",
+        "模板建站",
+        "小程序开发",
+        "微信小程序开发",
+        "经营管理软件开发",
+        "业务管理软件开发",
+        "分销系统软件开发",
+        "行业应用软件开发",
+        "AI定制",
+        "算法工程师",
+        "管理系统",
+        "管理平台"
+      ],
+      "tech_negative_category_keywords": [
+        "后期处理",
+        "短视频制作",
+        "视频剪辑",
+        "音频编辑",
+        "P图抠图",
+        "海报设计",
+        "平面广告设计",
+        "APP UI设计",
+        "应用UI设计",
+        "网页设计",
+        "定制礼品设计",
+        "摄影摄像",
+        "取名起名",
+        "文字校对"
+      ],
+      "tech_context_keywords": [
+        "修复",
+        "维护",
+        "功能",
+        "商城",
+        "记账",
+        "平台",
+        "云开发",
+        "Java",
+        "Python"
+      ],
+      "exclude_status_keywords": [
+        "已完结"
+      ],
+      "fallback_on_empty": true,
+      "pagination": {
+        "page_param": "p",
+        "start_page": 1,
+        "end_page": 5,
+        "stop_on_duplicate_page": true,
+        "try_fallback_on_duplicate_page": true,
+        "duplicate_overlap_ratio": 0.95
+      },
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "html_text_regex",
+          "site_kind": "zbj_demand_hall",
+          "wait_selector": "body",
+          "wait_until": "commit",
+          "timeout_seconds": 60,
+          "post_load_wait_ms": 5000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "retry_on_empty_attempts": 1,
+          "retry_on_empty_wait_ms": 2000,
+          "retry_on_empty_reset_to_blank": true,
+          "capture_network": true,
+          "capture_response_body": true,
+          "capture_resource_types": [
+            "xhr",
+            "fetch",
+            "document"
+          ],
+          "capture_url_patterns": [
+            "xq",
+            "task",
+            "search",
+            "list",
+            "pageNum",
+            "P20200219012"
+          ],
+          "network_log_path": "logs/zbj_demand_hall.page_{page_number}.network.json",
+          "rendered_html_path": "logs/zbj_demand_hall.page_{page_number}.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_demand_hall.page_{page_number}.cloak.png",
+          "cloak": {
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        }
+      ],
+      "detail_fetch": {
+        "enabled": true,
+        "max_items": 12,
+        "kind": "html_text_regex",
+        "site_kind": "zbj_demand_detail",
+        "fallback_on_empty": true,
+        "fallbacks": [
+          {
+            "kind": "cloak_cdp_page",
+            "parse_kind": "html_text_regex",
+            "site_kind": "zbj_demand_detail",
+            "wait_selector": "body",
+            "wait_until": "domcontentloaded",
+            "post_load_wait_ms": 5000,
+            "scroll_steps": 1,
+            "scroll_pause_ms": 1200,
+            "rendered_html_path": "logs/zbj_demand_detail.rendered.html",
+            "screenshot_path": "logs/zbj_demand_detail.png",
+            "cloak": {
+              "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+              "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+            }
+          }
+        ]
+      },
+      "max_items": 30,
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 8,
+        "retries": 0
+      }
+    },
+    {
+      "name": "xianyu_search_python_automation_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "xianyu_service_list",
+      "category": "service_titles",
+      "search_keyword": "python automation",
+      "location": "https://www.goofish.com/search?q=python%20automation",
+      "default_url": "https://www.goofish.com/search?q=python%20automation",
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "pagination": {
+        "page_numbers": [
+          1,
+          2
+        ],
+        "location_template": "https://www.goofish.com/search?q=python%20automation",
+        "default_url_template": "https://www.goofish.com/search?q=python%20automation",
+        "stop_on_duplicate_page": true,
+        "duplicate_overlap_ratio": 0.95
+      },
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 2,
+      "scroll_pause_ms": 1500,
+      "retry_on_empty_attempts": 2,
+      "retry_on_empty_wait_ms": 1800,
+      "retry_on_empty_reset_to_blank": true,
+      "retry_on_empty_html_markers": [
+        "passport.goofish.com/mini_login",
+        "mini_login.htm",
+        "J_MIDDLEWARE_FRAME_WIDGET",
+        "mtop.taobao.idlemtopsearch.pc.search/1.0/_____tmd_____"
+      ],
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const clickIfVisible = (selector) => { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); return true; } return false; }; const selectors = ['.ant-modal-close', '[class*=\"closeIcon\"]', '[class*=\"close-icon\"]', '[aria-label=\"Close\"]']; for (const selector of selectors) { clickIfVisible(selector); } const blockers = ['.ant-modal-root', '[class*=\"login-iframe-wrap\"]', '#xy-login-iframe']; for (const selector of blockers) { for (const node of document.querySelectorAll(selector)) { if (node instanceof HTMLElement) { node.style.display = 'none'; node.remove(); } } } for (const node of document.querySelectorAll('.ant-modal-mask')) { if (node instanceof HTMLElement) { node.style.display = 'none'; node.remove(); } } if (document.body instanceof HTMLElement) { document.body.style.overflow = 'auto'; } return document.querySelectorAll('[class*=\"feeds-item-wrap\"]').length; }",
+          "wait_after_ms": 1800
+        },
+        {
+          "type": "wait",
+          "wait_ms": 4000
+        },
+        {
+          "type": "click_pagination",
+          "target_page": "{page_number}",
+          "optional": true,
+          "wait_after_ms": 3500
+        },
+        {
+          "type": "wait",
+          "wait_ms": 1200
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cardSelector = '[class*=\"feeds-item-wrap\"]'; const anchors = Array.from(document.querySelectorAll('a[href*=\"goofish.com/item?id=\"], a[href*=\"/item?id=\"], a[href*=\"item?id=\"]')); const candidates = anchors.length ? anchors : Array.from(document.querySelectorAll(cardSelector)); const seen = new Set(); return candidates.map((node) => { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href]'); const card = (node instanceof HTMLElement ? node.closest(cardSelector) || node : null) || (anchor ? anchor.closest(cardSelector) : null) || anchor; if (!card) return null; const url = anchor ? toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || '') : ''; const title = normalize((card.querySelector('[class*=\"main-title\"]') || anchor || card).textContent); const priceText = normalize((card.querySelector('[class*=\"price-wrap\"]') || {}).textContent || ''); const sellerParts = Array.from(card.querySelectorAll('[class*=\"seller-text\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const tagParts = Array.from(card.querySelectorAll('[class*=\"cpv\"], [class*=\"service\"], [class*=\"price-desc\"], [class*=\"recommend-reason\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const summary = normalize(card.innerText); return { title, url, priceText, sellerName: sellerParts.join(' / '), cityName: sellerParts[0] || '', tags: tagParts.join(' / '), summary }; }).filter((item) => item && item.title && item.url && /\\/item\\?id=/.test(item.url) && !seen.has(item.url) && seen.add(item.url)); }",
+      "rendered_html_path": "logs/xianyu_search_python_automation.real.rendered.html",
+      "screenshot_path": "logs/xianyu_search_python_automation.real.png",
+      "extracted_json_path": "logs/xianyu_search_python_automation.real.items.json",
+      "title_include_keywords": [
+        "python",
+        "automation",
+        "script",
+        "playwright",
+        "rpa",
+        "bot"
+      ],
+      "content_include_keywords": [
+        "python",
+        "automation",
+        "script",
+        "playwright",
+        "rpa",
+        "bot"
+      ],
+      "content_exclude_keywords": [
+        "course",
+        "pdf",
+        "ebook",
+        "udemy"
+      ],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "46e998c0-cbe7-4c98-b2a2-e76ac499beb4",
+        "profile_name": "咸鱼专用浏览器",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "bilibili_hot_videos_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "bilibili_hot_videos",
+      "category": "social_hot_posts",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "wait_selector": "body",
+      "rendered_html_path": "logs/bilibili_hot_videos.real.rendered.html",
+      "screenshot_path": "logs/bilibili_hot_videos.real.png",
+      "extracted_json_path": "logs/bilibili_hot_videos.real.items.json",
+      "title_include_keywords": [
+        "自动化",
+        "脚本",
+        "工具",
+        "效率",
+        "运营",
+        "报表",
+        "表格",
+        "数据",
+        "电商",
+        "店铺",
+        "监控",
+        "提醒",
+        "软件",
+        "系统",
+        "工作流",
+        "教程",
+        "AI",
+        "创业",
+        "副业"
+      ],
+      "title_exclude_keywords": [
+        "鬼畜",
+        "舞蹈",
+        "音乐",
+        "搞笑",
+        "动画",
+        "影视",
+        "综艺",
+        "美食",
+        "篮球",
+        "足球",
+        "恋爱",
+        "穿搭",
+        "cos",
+        "游戏实况"
+      ],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+        "close_after_fetch": false
+      },
+      "location": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+      "default_url": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+      "pagination": {
+        "page_numbers": [
+          1,
+          2
+        ],
+        "location_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}",
+        "default_url_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}"
+      },
+      "wait_until": "commit",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 5500,
+      "scroll_steps": 1,
+      "scroll_pause_ms": 1000,
+      "retry_on_empty_attempts": 1,
+      "retry_on_empty_wait_ms": 2000,
+      "retry_on_empty_reset_to_blank": true,
+      "retry_on_empty_html_markers": [
+        "bili-video-card",
+        "/video/BV",
+        "bili-video-card__info--tit"
+      ],
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const closeButton = document.querySelector('.login-tip .close'); if (closeButton instanceof HTMLElement) { closeButton.click(); } return document.querySelectorAll('a[href*=\"/video/BV\"]').length; }",
+          "wait_after_ms": 1200
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cards = Array.from(document.querySelectorAll('.video-list-item .bili-video-card, .bili-video-card')); const seen = new Set(); const items = []; for (const card of cards) { const infoAnchor = card.querySelector('.bili-video-card__info--right a[href*=\"/video/BV\"]'); const fallbackAnchor = card.querySelector('a[href*=\"/video/BV\"]'); const anchor = infoAnchor || fallbackAnchor; const url = toAbsoluteUrl(anchor?.getAttribute('href') || anchor?.href || ''); if (!url || !/\\/video\\/BV/i.test(url) || seen.has(url)) { continue; } const titleNode = card.querySelector('.bili-video-card__info--tit'); const imageNode = card.querySelector('picture img[alt]'); const title = normalize(titleNode?.getAttribute('title') || titleNode?.textContent || imageNode?.getAttribute('alt') || anchor?.getAttribute('title') || ''); if (!title) { continue; } const metaNodes = Array.from(card.querySelectorAll('.bili-video-card__info--bottom, .bili-video-card__stats')); const metaText = normalize(metaNodes.map((node) => normalize(node.textContent)).filter(Boolean).join(' | ')); items.push({ title, content: metaText.slice(0, 240), url, published_at: '' }); seen.add(url); } return { items }; }"
+    },
+    {
+      "name": "bilibili_hot_comments_real",
+      "kind": "bilibili_hot_comments",
+      "category": "social_comments",
+      "seed_limit": 3,
+      "comments_per_video": 4,
+      "seed_title_include_keywords": [
+        "开店",
+        "店铺",
+        "流量",
+        "转化",
+        "选品",
+        "起店",
+        "货源",
+        "类目",
+        "定价",
+        "成本",
+        "避坑",
+        "怎么",
+        "如何",
+        "运营",
+        "电商"
+      ],
+      "seed_title_exclude_keywords": [
+        "AI",
+        "课代表",
+        "ComfyUI",
+        "工作流",
+        "教程合集",
+        "数学",
+        "英语",
+        "中东",
+        "特朗普",
+        "战争",
+        "考研",
+        "历史",
+        "影视",
+        "音乐",
+        "舞蹈",
+        "游戏",
+        "PS",
+        "剪辑",
+        "AE",
+        "教程",
+        "全攻略",
+        "入门",
+        "手把手",
+        "保姆级",
+        "零基础",
+        "22课",
+        "实操分享",
+        "教学"
+      ],
+      "seed_source": {
+        "kind": "cloak_cdp_page",
+        "parse_kind": "json_state",
+        "site_kind": "bilibili_hot_videos",
+        "category": "social_hot_posts",
+        "location": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+        "default_url": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page=1",
+        "pagination": {
+          "page_numbers": [
+            1,
+            2
+          ],
+          "location_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}",
+          "default_url_template": "https://search.bilibili.com/video?keyword=%E7%94%B5%E5%95%86%20%E8%BF%90%E8%90%A5%20%E5%BC%80%E5%BA%97&order=click&page={page}"
+        },
+        "json_items_path": "items",
+        "field_map": {
+          "title": "title",
+          "content": "content",
+          "url": "url",
+          "published_at": "published_at"
+        },
+        "wait_selector": "body",
+        "wait_until": "commit",
+        "timeout_seconds": 60,
+        "post_load_wait_ms": 5500,
+        "scroll_steps": 1,
+        "scroll_pause_ms": 1000,
+        "retry_on_empty_attempts": 1,
+        "retry_on_empty_wait_ms": 2000,
+        "retry_on_empty_reset_to_blank": true,
+        "retry_on_empty_html_markers": [
+          "bili-video-card",
+          "/video/BV",
+          "bili-video-card__info--tit"
+        ],
+        "page_actions": [
+          {
+            "type": "evaluate",
+            "script": "() => { const closeButton = document.querySelector('.login-tip .close'); if (closeButton instanceof HTMLElement) { closeButton.click(); } return document.querySelectorAll('a[href*=\"/video/BV\"]').length; }",
+            "wait_after_ms": 1200
+          }
+        ],
+        "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const cards = Array.from(document.querySelectorAll('.video-list-item .bili-video-card, .bili-video-card')); const seen = new Set(); const items = []; for (const card of cards) { const infoAnchor = card.querySelector('.bili-video-card__info--right a[href*=\"/video/BV\"]'); const fallbackAnchor = card.querySelector('a[href*=\"/video/BV\"]'); const anchor = infoAnchor || fallbackAnchor; const url = toAbsoluteUrl(anchor?.getAttribute('href') || anchor?.href || ''); if (!url || !/\\/video\\/BV/i.test(url) || seen.has(url)) { continue; } const titleNode = card.querySelector('.bili-video-card__info--tit'); const imageNode = card.querySelector('picture img[alt]'); const title = normalize(titleNode?.getAttribute('title') || titleNode?.textContent || imageNode?.getAttribute('alt') || anchor?.getAttribute('title') || ''); if (!title) { continue; } const metaNodes = Array.from(card.querySelectorAll('.bili-video-card__info--bottom, .bili-video-card__stats')); const metaText = normalize(metaNodes.map((node) => normalize(node.textContent)).filter(Boolean).join(' | ')); items.push({ title, content: metaText.slice(0, 240), url, published_at: '' }); seen.add(url); } return { items }; }",
+        "rendered_html_path": "logs/bilibili_hot_comment_seeds.real.rendered.html",
+        "screenshot_path": "logs/bilibili_hot_comment_seeds.real.png",
+        "extracted_json_path": "logs/bilibili_hot_comment_seeds.real.items.json",
+        "title_include_keywords": [
+          "开店",
+          "店铺",
+          "流量",
+          "转化",
+          "选品",
+          "起店",
+          "货源",
+          "类目",
+          "定价",
+          "成本",
+          "避坑",
+          "怎么",
+          "如何",
+          "运营",
+          "电商"
+        ],
+        "title_exclude_keywords": [
+          "AI",
+          "课代表",
+          "ComfyUI",
+          "工作流",
+          "教程合集",
+          "数学",
+          "英语",
+          "中东",
+          "特朗普",
+          "战争",
+          "考研",
+          "历史",
+          "影视",
+          "音乐",
+          "舞蹈",
+          "游戏",
+          "PS",
+          "剪辑",
+          "AE",
+          "教程",
+          "全攻略",
+          "入门",
+          "手把手",
+          "保姆级",
+          "零基础",
+          "22课",
+          "实操分享",
+          "教学"
+        ],
+        "max_items": 12,
+        "cloak": {
+          "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+          "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+          "close_after_fetch": false
+        }
+      },
+      "comment_wait_selector": "body",
+      "comment_wait_until": "domcontentloaded",
+      "comment_post_load_wait_ms": 7000,
+      "comment_scroll_steps": 6,
+      "comment_scroll_pause_ms": 1500,
+      "comment_response_body_max_chars": 120000,
+      "comment_network_log_template": "logs/bilibili_hot_comments.real.video_{video_index}.network.json",
+      "comment_rendered_html_template": "logs/bilibili_hot_comments.real.video_{video_index}.rendered.html",
+      "comment_screenshot_template": "logs/bilibili_hot_comments.real.video_{video_index}.png",
+      "comment_question_keywords": [
+        "怎么",
+        "如何",
+        "有没有",
+        "请教",
+        "请问",
+        "想问",
+        "怎样",
+        "怎么样",
+        "区别",
+        "为什么",
+        "避坑",
+        "全包",
+        "退店",
+        "类目"
+      ],
+      "comment_business_keywords": [
+        "电商",
+        "运营",
+        "开店",
+        "店铺",
+        "订单",
+        "流量",
+        "转化",
+        "选品",
+        "起店",
+        "货源",
+        "类目",
+        "定价",
+        "发货",
+        "售后",
+        "带货",
+        "表格",
+        "数据",
+        "商品",
+        "商家"
+      ],
+      "comment_text_exclude_keywords": [
+        "打卡",
+        "路过",
+        "来了",
+        "支持一个",
+        "哈哈",
+        "AI课代表",
+        "内容由@AI视频总结",
+        "仅供参考",
+        "总结：",
+        "课代表总结",
+        "求资料",
+        "求学习资料",
+        "球球资料",
+        "一键三连",
+        "已三连",
+        "已关注",
+        "老师讲的很细",
+        "求发一下资料"
+      ],
+      "comment_author_exclude_keywords": [
+        "ai",
+        "课代表",
+        "课程教学"
+      ],
+      "comment_max_message_length": 120,
+      "title_exclude_keywords": [
+        "哈哈",
+        "支持",
+        "打卡",
+        "来了",
+        "路过"
+      ],
+      "max_items": 8,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_BILIBILI_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_BILIBILI_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "douyin_hot_videos_real",
+      "kind": "douyin_hot_videos",
+      "site_kind": "douyin_hot_videos",
+      "category": "social_hot_posts",
+      "location": "https://www.douyin.com/search/%E6%8A%96%E5%BA%97%20%E8%BF%90%E8%90%A5?type=video",
+      "default_url": "https://www.douyin.com/search/%E6%8A%96%E5%BA%97%20%E8%BF%90%E8%90%A5?type=video",
+      "wait_selector": "body",
+      "wait_until": "commit",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 3,
+      "scroll_pause_ms": 1600,
+      "retry_on_empty_attempts": 1,
+      "retry_on_empty_wait_ms": 2500,
+      "retry_on_empty_reset_to_blank": true,
+      "video_response_body_max_chars": 1500000,
+      "video_network_log_path": "logs/douyin_hot_videos.real.network.json",
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const closeTexts = ['稍后再说', '以后再说', '知道了', '我知道了', '关闭']; for (const text of closeTexts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+          "wait_after_ms": 1500
+        }
+      ],
+      "rendered_html_path": "logs/douyin_hot_videos.real.rendered.html",
+      "screenshot_path": "logs/douyin_hot_videos.real.png",
+      "extracted_json_path": "logs/douyin_hot_videos.real.items.json",
+      "title_include_keywords": [
+        "抖店",
+        "运营",
+        "起店",
+        "类目",
+        "货盘",
+        "流量",
+        "转化",
+        "直播间"
+      ],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_DOUYIN_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_DOUYIN_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "douyin_hot_comments_real",
+      "kind": "douyin_hot_comments",
+      "category": "social_comments",
+      "seed_source_name": "douyin_hot_videos_real",
+      "seed_limit": 5,
+      "comments_per_video": 5,
+      "seed_title_include_keywords": [
+        "抖店",
+        "起店",
+        "类目",
+        "货盘",
+        "选品",
+        "流量",
+        "售后",
+        "供应链",
+        "一件代发",
+        "直播间",
+        "数据"
+      ],
+      "seed_title_exclude_keywords": [
+        "招聘",
+        "培训",
+        "课程",
+        "教程",
+        "陪跑",
+        "收徒",
+        "资料"
+      ],
+      "comment_wait_selector": "body",
+      "comment_wait_until": "commit",
+      "comment_timeout_seconds": 60,
+      "comment_post_load_wait_ms": 9000,
+      "comment_scroll_steps": 5,
+      "comment_scroll_pause_ms": 1800,
+      "comment_response_body_max_chars": 400000,
+      "comment_network_log_template": "logs/douyin_hot_comments.real.video_{video_index}.network.json",
+      "comment_rendered_html_template": "logs/douyin_hot_comments.real.video_{video_index}.rendered.html",
+      "comment_screenshot_template": "logs/douyin_hot_comments.real.video_{video_index}.png",
+      "comment_question_keywords": [
+        "怎么",
+        "如何",
+        "有没有",
+        "能不能",
+        "需要",
+        "请问",
+        "想问",
+        "为什么",
+        "哪种",
+        "哪里",
+        "多少",
+        "什么",
+        "联系"
+      ],
+      "comment_business_keywords": [
+        "抖店",
+        "店铺",
+        "类目",
+        "货盘",
+        "选品",
+        "供应链",
+        "一件代发",
+        "售后",
+        "发货",
+        "流量",
+        "转化",
+        "直播间",
+        "数据",
+        "提醒",
+        "复盘",
+        "价格",
+        "成本",
+        "利润",
+        "投流",
+        "工具",
+        "起店",
+        "1688",
+        "关联",
+        "入池",
+        "侵权",
+        "分销",
+        "出单"
+      ],
+      "comment_text_exclude_keywords": [
+        "求资料",
+        "求课程",
+        "已三连",
+        "已关注",
+        "老师",
+        "打卡",
+        "路过",
+        "哈哈",
+        "支持一下",
+        "收徒",
+        "陪跑"
+      ],
+      "comment_author_exclude_keywords": [
+        "官方",
+        "课程",
+        "培训",
+        "陪跑"
+      ],
+      "comment_min_message_length": 4,
+      "comment_max_message_length": 120,
+      "title_exclude_keywords": [
+        "哈哈",
+        "支持",
+        "打卡",
+        "路过"
+      ],
+      "max_items": 8,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_DOUYIN_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_DOUYIN_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "xiaohongshu_hot_notes_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "xiaohongshu_hot_notes",
+      "category": "social_hot_posts",
+      "location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 3,
+      "scroll_pause_ms": 1800,
+      "retry_on_empty_attempts": 2,
+      "retry_on_empty_wait_ms": 2000,
+      "retry_on_empty_reset_to_blank": true,
+      "retry_on_empty_html_markers": [
+        "search_result",
+        "explore",
+        "note-item",
+        "小红书"
+      ],
+      "capture_network": true,
+      "capture_response_body": true,
+      "response_body_max_chars": 300000,
+      "capture_resource_types": [
+        "xhr",
+        "fetch",
+        "document"
+      ],
+      "capture_url_patterns": [
+        "/api/sns/web/v1/search/",
+        "/api/sns/web/v1/feed",
+        "/api/sns/web/v1/homefeed"
+      ],
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const texts = ['同意', '知道了', '稍后再说', '下次再说']; for (const text of texts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } const closeSelectors = ['[class*=\"close\"]', '[aria-label=\"关闭\"]', '.close']; for (const selector of closeSelectors) { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+          "wait_after_ms": 1500
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const selectors = ['a[href*=\"/explore/\"]', 'a[href*=\"/discovery/item/\"]', 'section.note-item', '[class*=\"note-item\"]']; const rawNodes = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))); const seen = new Set(); const items = []; for (const node of rawNodes) { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href*=\"/explore/\"], a[href*=\"/discovery/item/\"]'); if (!(anchor instanceof HTMLAnchorElement)) { continue; } const url = toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || ''); if (!url || (!url.includes('/explore/') && !url.includes('/discovery/item/')) || seen.has(url)) { continue; } const card = (anchor.closest('section') || anchor.closest('div') || anchor); const titleCandidates = [card.querySelector('[class*=\"title\"]'), card.querySelector('img[alt]'), anchor.querySelector('[class*=\"title\"]'), anchor]; const title = normalize(titleCandidates.map((item) => item instanceof HTMLElement ? (item.getAttribute('alt') || item.getAttribute('title') || item.textContent || '') : '').find(Boolean) || ''); const contentCandidates = Array.from(card.querySelectorAll('[class*=\"desc\"], [class*=\"content\"], [class*=\"text\"], [class*=\"name\"], [class*=\"info\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const content = normalize(contentCandidates.join(' | ') || card.textContent || ''); if (!title) { continue; } items.push({ title, content: content.slice(0, 280), url, published_at: '' }); seen.add(url); } return { items }; }",
+      "network_log_path": "logs/xiaohongshu_hot_notes.real.network.json",
+      "rendered_html_path": "logs/xiaohongshu_hot_notes.real.rendered.html",
+      "screenshot_path": "logs/xiaohongshu_hot_notes.real.png",
+      "extracted_json_path": "logs/xiaohongshu_hot_notes.real.items.json",
+      "title_include_keywords": [
+        "小红书",
+        "私域",
+        "留资",
+        "表单",
+        "线索",
+        "自动",
+        "运营",
+        "客户",
+        "数据"
+      ],
+      "title_exclude_keywords": [
+        "穿搭",
+        "美妆",
+        "旅游",
+        "探店",
+        "减肥",
+        "恋爱",
+        "穿衣",
+        "发型"
+      ],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+        "profile_name": "小红书专用浏览器",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "xiaohongshu_hot_comments_real",
+      "kind": "xiaohongshu_hot_comments",
+      "site_kind": "xiaohongshu_hot_comments",
+      "category": "social_comments",
+      "seed_source_name": "xiaohongshu_hot_notes_real",
+      "seed_limit": 3,
+      "comments_per_note": 5,
+      "search_location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "search_default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+      "seed_source": {
+        "name": "xiaohongshu_hot_notes_smoke_seed",
+        "kind": "cloak_cdp_page",
+        "parse_kind": "json_state",
+        "site_kind": "xiaohongshu_hot_notes",
+        "category": "social_hot_posts",
+        "location": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+        "default_url": "https://www.xiaohongshu.com/search_result?keyword=%E7%A7%81%E5%9F%9F%20%E7%95%99%E8%B5%84%20%E8%A1%A8%E5%8D%95&source=web_explore_feed",
+        "json_items_path": "items",
+        "field_map": {
+          "title": "title",
+          "content": "content",
+          "url": "url",
+          "published_at": "published_at"
+        },
+        "wait_selector": "body",
+        "wait_until": "domcontentloaded",
+        "timeout_seconds": 45,
+        "post_load_wait_ms": 7000,
+        "scroll_steps": 2,
+        "scroll_pause_ms": 1500,
+        "retry_on_empty_attempts": 1,
+        "retry_on_empty_wait_ms": 2000,
+        "retry_on_empty_reset_to_blank": true,
+        "retry_on_empty_html_markers": [
+          "search_result",
+          "explore",
+          "note-item",
+          "小红书"
+        ],
+        "capture_network": true,
+        "capture_response_body": true,
+        "response_body_max_chars": 150000,
+        "capture_resource_types": [
+          "xhr",
+          "fetch",
+          "document"
+        ],
+        "capture_url_patterns": [
+          "/api/sns/web/v1/search/"
+        ],
+        "page_actions": [
+          {
+            "type": "evaluate",
+            "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const texts = ['同意', '知道了', '稍后再说', '下次再说']; for (const text of texts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } const closeSelectors = ['[class*=\"close\"]', '[aria-label=\"关闭\"]', '.close']; for (const selector of closeSelectors) { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+            "wait_after_ms": 1200
+          }
+        ],
+        "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const selectors = ['a[href*=\"/explore/\"]', 'a[href*=\"/discovery/item/\"]', 'section.note-item', '[class*=\"note-item\"]']; const rawNodes = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector))); const seen = new Set(); const items = []; for (const node of rawNodes) { const anchor = node instanceof HTMLAnchorElement ? node : node.querySelector('a[href*=\"/explore/\"], a[href*=\"/discovery/item/\"]'); if (!(anchor instanceof HTMLAnchorElement)) { continue; } const url = toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || ''); if (!url || (!url.includes('/explore/') && !url.includes('/discovery/item/')) || seen.has(url)) { continue; } const card = (anchor.closest('section') || anchor.closest('div') || anchor); const titleCandidates = [card.querySelector('[class*=\"title\"]'), card.querySelector('img[alt]'), anchor.querySelector('[class*=\"title\"]'), anchor]; const title = normalize(titleCandidates.map((item) => item instanceof HTMLElement ? (item.getAttribute('alt') || item.getAttribute('title') || item.textContent || '') : '').find(Boolean) || ''); const contentCandidates = Array.from(card.querySelectorAll('[class*=\"desc\"], [class*=\"content\"], [class*=\"text\"], [class*=\"name\"], [class*=\"info\"]')).map((item) => normalize(item.textContent)).filter(Boolean); const content = normalize(contentCandidates.join(' | ') || card.textContent || ''); if (!title) { continue; } items.push({ title, content: content.slice(0, 280), url, published_at: '' }); seen.add(url); if (items.length >= 5) { break; } } return { items }; }",
+        "network_log_path": "logs/xiaohongshu_hot_comments.seed.network.json",
+        "rendered_html_path": "logs/xiaohongshu_hot_comments.seed.rendered.html",
+        "screenshot_path": "logs/xiaohongshu_hot_comments.seed.png",
+        "extracted_json_path": "logs/xiaohongshu_hot_comments.seed.items.json",
+        "max_items": 5,
+        "cloak": {
+          "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+          "profile_name": "小红书专用浏览器",
+          "close_after_fetch": false
+        }
+      },
+      "seed_title_include_keywords": [
+        "私域",
+        "留资",
+        "表单",
+        "线索",
+        "客户",
+        "转化"
+      ],
+      "seed_title_exclude_keywords": [
+        "穿搭",
+        "美妆",
+        "旅游",
+        "探店",
+        "减肥",
+        "恋爱",
+        "发型"
+      ],
+      "comment_wait_selector": "body",
+      "comment_wait_until": "domcontentloaded",
+      "comment_timeout_seconds": 60,
+      "comment_post_load_wait_ms": 6500,
+      "comment_scroll_steps": 1,
+      "comment_scroll_pause_ms": 1200,
+      "comment_click_wait_ms": 3500,
+      "comment_scroll_wait_ms": 2200,
+      "comment_click_selector": "[data-radar-note-target='1'] .cover, [data-radar-note-target='1'] [class*='cover'], [data-radar-note-target='1']",
+      "comment_response_body_max_chars": 150000,
+      "comment_network_log_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.network.json",
+      "comment_rendered_html_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.rendered.html",
+      "comment_screenshot_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.png",
+      "comment_extracted_json_template": "logs/xiaohongshu_hot_comments.real.note_{note_index}.items.json",
+      "comment_min_message_length": 2,
+      "content_exclude_keywords": [
+        "穿搭",
+        "美妆",
+        "旅游",
+        "探店"
+      ],
+      "max_items": 10,
+      "cloak": {
+        "profile_id": "1680b3ca-66bd-45ab-b10d-47f11d824560",
+        "profile_name": "小红书专用浏览器",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "taobao_service_market_real",
+      "kind": "cloak_cdp_page",
+      "parse_kind": "json_state",
+      "site_kind": "taobao_service_market",
+      "category": "service_titles",
+      "location": "https://fuwu.taobao.com/",
+      "default_url": "https://fuwu.taobao.com/",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "wait_selector": "body",
+      "wait_until": "domcontentloaded",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 2,
+      "scroll_pause_ms": 1500,
+      "retry_on_empty_attempts": 1,
+      "retry_on_empty_wait_ms": 1800,
+      "retry_on_empty_reset_to_blank": true,
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const closeSelectors = ['.ant-modal-close', '[class*=\"closeIcon\"]', '[class*=\"close-icon\"]', '[aria-label=\"Close\"]']; for (const selector of closeSelectors) { const node = document.querySelector(selector); if (node instanceof HTMLElement) { node.click(); } } for (const selector of ['.ant-modal-mask', '.ant-modal-root']) { for (const node of document.querySelectorAll(selector)) { if (node instanceof HTMLElement) { node.style.display = 'none'; node.remove(); } } } if (document.body instanceof HTMLElement) { document.body.style.overflow = 'auto'; } return normalize(document.body ? document.body.innerText.slice(0, 200) : ''); }",
+          "wait_after_ms": 1200
+        }
+      ],
+      "extract_js": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const toAbsoluteUrl = (value) => { try { return new URL(value, window.location.origin).href; } catch { return ''; } }; const allowedPatterns = ['fuwu.taobao.com/ser/list.htm', 'fw.taobao.com/common/detail.html', 'fuwu.taobao.com/module/service-market-order-confirm/extendApp']; const blockedTexts = ['登录', '首页', '返回旧版', '我的服务', '服务商入驻']; const seen = new Set(); const items = []; for (const anchor of Array.from(document.querySelectorAll('a[href]'))) { const url = toAbsoluteUrl(anchor.getAttribute('href') || anchor.href || ''); if (!url || !allowedPatterns.some((pattern) => url.includes(pattern)) || seen.has(url)) { continue; } const title = normalize(anchor.getAttribute('title') || anchor.textContent || ''); const card = anchor.closest('div, section, li, article') || anchor; const content = normalize((card instanceof HTMLElement ? card.innerText : anchor.textContent) || '').slice(0, 240); if (!title || title.length < 4 || title.length > 80) { continue; } if (blockedTexts.some((text) => title === text || content.includes(text))) { continue; } items.push({ title, content, url, published_at: '' }); seen.add(url); if (items.length >= 30) { break; } } return { items }; }",
+      "rendered_html_path": "logs/taobao_service_market.real.rendered.html",
+      "screenshot_path": "logs/taobao_service_market.real.png",
+      "extracted_json_path": "logs/taobao_service_market.real.items.json",
+      "title_include_keywords": [
+        "AI",
+        "ERP",
+        "CRM",
+        "店铺",
+        "详情",
+        "商品",
+        "营销",
+        "会员",
+        "客服",
+        "工单",
+        "报表",
+        "分析",
+        "直播",
+        "数字人",
+        "发货",
+        "工具"
+      ],
+      "title_exclude_keywords": [
+        "登录",
+        "首页",
+        "返回旧版",
+        "我的服务",
+        "服务商入驻"
+      ],
+      "content_exclude_keywords": [
+        "登录",
+        "返回旧版",
+        "我的服务",
+        "服务商入驻"
+      ],
+      "max_items": 15,
+      "cloak": {
+        "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+        "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "cnode_ask_topics_real",
+      "kind": "json",
+      "site_kind": "cnode_topics",
+      "category": "forum_posts",
+      "location": "https://cnodejs.org/api/v1/topics?tab=ask&page=1&limit=20",
+      "default_url": "https://cnodejs.org/api/v1/topics?tab=ask&page=1&limit=20",
+      "base_url": "https://cnodejs.org",
+      "title_include_keywords": [
+        "自动",
+        "脚本",
+        "工具",
+        "系统",
+        "数据",
+        "接口",
+        "API",
+        "爬虫",
+        "AI",
+        "SaaS",
+        "CRM",
+        "ERP",
+        "表单",
+        "电商",
+        "监控",
+        "提醒",
+        "效率",
+        "工作流",
+        "workflow",
+        "automation",
+        "script",
+        "tool"
+      ],
+      "content_include_keywords": [
+        "自动",
+        "脚本",
+        "工具",
+        "系统",
+        "数据",
+        "接口",
+        "API",
+        "爬虫",
+        "AI",
+        "SaaS",
+        "CRM",
+        "ERP",
+        "表单",
+        "电商",
+        "监控",
+        "提醒",
+        "效率",
+        "工作流",
+        "workflow",
+        "automation",
+        "script",
+        "tool"
+      ],
+      "max_items": 12,
+      "fetch": {
+        "timeout_seconds": 10,
+        "retries": 0
+      }
+    },
+    {
+      "name": "remoteok_jobs_real",
+      "kind": "json",
+      "site_kind": "remoteok_jobs",
+      "category": "job_posts",
+      "location": "https://remoteok.com/api?tag=dev",
+      "default_url": "https://remoteok.com/remote-dev-jobs",
+      "base_url": "https://remoteok.com",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "title_include_keywords": [
+        "automation",
+        "platform",
+        "data",
+        "python",
+        "api",
+        "backend",
+        "security",
+        "operations",
+        "workflow",
+        "tool",
+        "engineer",
+        "developer",
+        "crm",
+        "erp",
+        "e-commerce",
+        "ai"
+      ],
+      "content_include_keywords": [
+        "automation",
+        "platform",
+        "data",
+        "python",
+        "api",
+        "backend",
+        "security",
+        "operations",
+        "workflow",
+        "tool",
+        "crm",
+        "erp",
+        "e-commerce",
+        "ai",
+        "dashboard",
+        "integration"
+      ],
+      "title_exclude_keywords": [
+        "designer",
+        "ios",
+        "android"
+      ],
+      "max_items": 20,
+      "fetch": {
+        "timeout_seconds": 12,
+        "retries": 0
+      }
+    },
+    {
+      "name": "ccgp_procurement_notices_real",
+      "kind": "html_text_regex",
+      "site_kind": "ccgp_procurement_list",
+      "category": "procurement_posts",
+      "location": "https://www.ccgp.gov.cn/cggg/zygg/gkzb/",
+      "default_url": "https://www.ccgp.gov.cn/cggg/zygg/gkzb/",
+      "base_url": "https://www.ccgp.gov.cn/cggg/zygg/gkzb/",
+      "title_include_keywords": [
+        "系统",
+        "平台",
+        "软件",
+        "信息",
+        "数据",
+        "监测",
+        "运维",
+        "服务",
+        "智慧",
+        "数字",
+        "采购"
+      ],
+      "content_include_keywords": [
+        "系统",
+        "平台",
+        "软件",
+        "信息",
+        "数据",
+        "监测",
+        "运维",
+        "服务",
+        "智慧",
+        "数字",
+        "采购"
+      ],
+      "max_items": 15,
+      "fetch": {
+        "timeout_seconds": 12,
+        "retries": 0
+      }
+    },
+    {
+      "name": "feishu_app_marketplace_real",
+      "kind": "json",
+      "site_kind": "feishu_app_market",
+      "category": "service_titles",
+      "location": "https://app.feishu.cn/oapi_svc/appstore/new/query_item",
+      "default_url": "https://app.feishu.cn/",
+      "json_items_path": "data.apps",
+      "detail_url_template": "https://app.feishu.cn/app/{id}",
+      "field_map": {
+        "title": "name",
+        "content": "desc",
+        "url": "url",
+        "published_at": "published_at",
+        "id": "appID"
+      },
+      "headers": {
+        "Content-Type": "application/json",
+        "Origin": "https://app.feishu.cn",
+        "Referer": "https://app.feishu.cn/",
+        "X-Timezone-Offset": "-480"
+      },
+      "title_include_keywords": [
+        "AI",
+        "ERP",
+        "CRM",
+        "报销",
+        "费控",
+        "工单",
+        "审批",
+        "表单",
+        "项目",
+        "数据",
+        "BI",
+        "客服",
+        "销售",
+        "招聘",
+        "绩效",
+        "库存",
+        "采购",
+        "分析",
+        "自动化",
+        "工时",
+        "问卷"
+      ],
+      "content_include_keywords": [
+        "AI",
+        "ERP",
+        "CRM",
+        "报销",
+        "费控",
+        "工单",
+        "审批",
+        "表单",
+        "项目",
+        "数据",
+        "BI",
+        "客服",
+        "销售",
+        "招聘",
+        "绩效",
+        "库存",
+        "采购",
+        "分析",
+        "自动化",
+        "工时",
+        "问卷"
+      ],
+      "max_items": 20,
+      "fetch": {
+        "method": "POST",
+        "json_body": {
+          "category_condition": {
+            "category_filters": []
+          },
+          "type": [],
+          "cursor": "0",
+          "count": 30
+        },
+        "timeout_seconds": 15,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_search_script_dev",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "search_keyword": "脚本开发",
+      "location": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+      "default_url": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "title_include_keywords": [
+        "脚本",
+        "自动",
+        "python",
+        "爬虫",
+        "采集",
+        "工具",
+        "报表",
+        "对账",
+        "erp",
+        "crm"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "包装",
+        "平面",
+        "商标",
+        "海报"
+      ],
+      "max_items": 12,
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "json_state",
+          "site_kind": "zbj_search_state",
+          "search_keyword": "脚本开发",
+          "location": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+          "default_url": "https://www.zbj.com/fw/?k=%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91",
+          "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+          "wait_selector": "body",
+          "wait_until": "domcontentloaded",
+          "post_load_wait_ms": 4000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+          "rendered_html_path": "logs/zbj_search_script_dev.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_search_script_dev.cloak.png",
+          "extracted_json_path": "logs/zbj_search_script_dev.cloak.result_list.json",
+          "cloak": {
+            "close_after_fetch": false,
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        },
+        {
+          "kind": "html_text_regex",
+          "site_kind": "zbj_service_detail",
+          "location": "https://www.zbj.com/fw/2141625.html",
+          "default_url": "https://www.zbj.com/fw/2141625.html"
+        }
+      ],
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 4,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_search_automation_script",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "search_keyword": "自动化脚本",
+      "location": "https://www.zbj.com/fw/?k=%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC",
+      "default_url": "https://www.zbj.com/fw/?k=%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "title_include_keywords": [
+        "自动",
+        "脚本",
+        "流程",
+        "批量",
+        "监控",
+        "提醒",
+        "导出",
+        "对账",
+        "python",
+        "工具"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "包装",
+        "平面",
+        "商标",
+        "海报"
+      ],
+      "max_items": 12,
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "json_state",
+          "site_kind": "zbj_search_state",
+          "search_keyword": "自动化脚本",
+          "location": "https://www.zbj.com/fw/?k=%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC",
+          "default_url": "https://www.zbj.com/fw/?k=%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC",
+          "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+          "wait_selector": "body",
+          "wait_until": "domcontentloaded",
+          "post_load_wait_ms": 4000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+          "rendered_html_path": "logs/zbj_search_automation_script.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_search_automation_script.cloak.png",
+          "extracted_json_path": "logs/zbj_search_automation_script.cloak.result_list.json",
+          "cloak": {
+            "close_after_fetch": false,
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        },
+        {
+          "kind": "html_text_regex",
+          "site_kind": "zbj_service_detail",
+          "location": "https://www.zbj.com/fw/2237502.html",
+          "default_url": "https://www.zbj.com/fw/2237502.html"
+        }
+      ],
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 4,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_search_data_collection",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "search_keyword": "数据采集",
+      "location": "https://www.zbj.com/fw/?k=%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86",
+      "default_url": "https://www.zbj.com/fw/?k=%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "title_include_keywords": [
+        "数据",
+        "采集",
+        "爬虫",
+        "抓取",
+        "清洗",
+        "报表",
+        "导出",
+        "自动",
+        "python"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "包装",
+        "平面",
+        "商标",
+        "海报"
+      ],
+      "max_items": 12,
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "json_state",
+          "site_kind": "zbj_search_state",
+          "search_keyword": "数据采集",
+          "location": "https://www.zbj.com/fw/?k=%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86",
+          "default_url": "https://www.zbj.com/fw/?k=%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86",
+          "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+          "wait_selector": "body",
+          "wait_until": "domcontentloaded",
+          "post_load_wait_ms": 4000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+          "rendered_html_path": "logs/zbj_search_data_collection.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_search_data_collection.cloak.png",
+          "extracted_json_path": "logs/zbj_search_data_collection.cloak.result_list.json",
+          "cloak": {
+            "close_after_fetch": false,
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        },
+        {
+          "kind": "html_text_regex",
+          "site_kind": "zbj_service_detail",
+          "location": "https://www.zbj.com/fw/1809501.html",
+          "default_url": "https://www.zbj.com/fw/1809501.html"
+        }
+      ],
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 4,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_search_erp_reconcile",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "search_keyword": "ERP对账",
+      "location": "https://www.zbj.com/fw/?k=ERP%E5%AF%B9%E8%B4%A6",
+      "default_url": "https://www.zbj.com/fw/?k=ERP%E5%AF%B9%E8%B4%A6",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "title_include_keywords": [
+        "erp",
+        "对账",
+        "订单",
+        "库存",
+        "店铺",
+        "财务",
+        "报表",
+        "自动",
+        "系统"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "包装",
+        "平面",
+        "商标",
+        "海报"
+      ],
+      "max_items": 12,
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "json_state",
+          "site_kind": "zbj_search_state",
+          "search_keyword": "ERP对账",
+          "location": "https://www.zbj.com/fw/?k=ERP%E5%AF%B9%E8%B4%A6",
+          "default_url": "https://www.zbj.com/fw/?k=ERP%E5%AF%B9%E8%B4%A6",
+          "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+          "wait_selector": "body",
+          "wait_until": "domcontentloaded",
+          "post_load_wait_ms": 4000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+          "rendered_html_path": "logs/zbj_search_erp_reconcile.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_search_erp_reconcile.cloak.png",
+          "extracted_json_path": "logs/zbj_search_erp_reconcile.cloak.result_list.json",
+          "cloak": {
+            "close_after_fetch": false,
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        },
+        {
+          "kind": "html_text_regex",
+          "site_kind": "zbj_service_detail",
+          "location": "https://www.zbj.com/fw/1670637.html",
+          "default_url": "https://www.zbj.com/fw/1670637.html"
+        }
+      ],
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 4,
+        "retries": 0
+      }
+    },
+    {
+      "name": "zbj_search_report_system",
+      "kind": "html_links",
+      "site_kind": "zbj_search_list",
+      "category": "service_titles",
+      "search_keyword": "报表系统",
+      "location": "https://www.zbj.com/fw/?k=%E6%8A%A5%E8%A1%A8%E7%B3%BB%E7%BB%9F",
+      "default_url": "https://www.zbj.com/fw/?k=%E6%8A%A5%E8%A1%A8%E7%B3%BB%E7%BB%9F",
+      "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+      "title_include_keywords": [
+        "报表",
+        "系统",
+        "仪表盘",
+        "看板",
+        "数据",
+        "订单",
+        "库存",
+        "对账",
+        "导出",
+        "分析"
+      ],
+      "title_exclude_keywords": [
+        "logo",
+        "包装",
+        "平面",
+        "商标",
+        "海报"
+      ],
+      "max_items": 12,
+      "fallback_on_empty": true,
+      "fallbacks": [
+        {
+          "kind": "cloak_cdp_page",
+          "parse_kind": "json_state",
+          "site_kind": "zbj_search_state",
+          "search_keyword": "报表系统",
+          "location": "https://www.zbj.com/fw/?k=%E6%8A%A5%E8%A1%A8%E7%B3%BB%E7%BB%9F",
+          "default_url": "https://www.zbj.com/fw/?k=%E6%8A%A5%E8%A1%A8%E7%B3%BB%E7%BB%9F",
+          "detail_url_template": "https://www.zbj.com/fw/{id}.html",
+          "wait_selector": "body",
+          "wait_until": "domcontentloaded",
+          "post_load_wait_ms": 4000,
+          "scroll_steps": 2,
+          "scroll_pause_ms": 1500,
+          "extract_js": "() => { const root = (((window.__NUXT__ || {}).data || [])[0] || {}); return root.resultList || []; }",
+          "rendered_html_path": "logs/zbj_search_report_system.cloak.rendered.html",
+          "screenshot_path": "logs/zbj_search_report_system.cloak.png",
+          "extracted_json_path": "logs/zbj_search_report_system.cloak.result_list.json",
+          "cloak": {
+            "close_after_fetch": false,
+            "profile_id": "${DEMAND_RADAR_ZBJ_PROFILE_ID}",
+            "profile_name": "${DEMAND_RADAR_ZBJ_PROFILE_NAME}"
+          }
+        },
+        {
+          "kind": "html_text_regex",
+          "site_kind": "zbj_service_detail",
+          "location": "https://www.zbj.com/fw/1918989.html",
+          "default_url": "https://www.zbj.com/fw/1918989.html"
+        }
+      ],
+      "headers": {
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+      },
+      "fetch": {
+        "timeout_seconds": 4,
+        "retries": 0
+      }
+    }
+  ]
+}

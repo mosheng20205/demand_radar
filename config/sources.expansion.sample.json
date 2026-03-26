@@ -1,0 +1,211 @@
+{
+  "database_path": "data/source_expansion.db",
+  "min_score": 10,
+  "notify_min_score": 40,
+  "export_path": "exports/source_expansion.csv",
+  "top_leads_export_path": "exports/source_expansion_top20.csv",
+  "theme_export_path": "exports/source_expansion_themes.csv",
+  "product_directions_export_path": "exports/source_expansion_products.csv",
+  "top_leads_limit": 20,
+  "product_directions_limit": 5,
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 25,
+      "keywords": ["求工具", "求脚本", "求代做", "求报价", "need help", "custom tool", "looking for script"]
+    },
+    "high_frequency": {
+      "score": 15,
+      "keywords": ["每天", "经常", "批量", "自动", "daily", "often", "batch", "automate"]
+    },
+    "pain": {
+      "score": 12,
+      "keywords": ["太麻烦", "太贵", "报错", "掉线", "不稳定", "manual", "too expensive", "errors", "unstable"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["提醒", "导出", "对账", "汇总", "监控", "alert", "export", "reconcile", "summary", "monitor"]
+    },
+    "budget": {
+      "score": 20,
+      "keywords": ["预算", "报价", "付费", "价格", "budget", "price", "pricing"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "撞库", "隐私窃取", "stolen account", "credential stuffing"]
+    }
+  },
+  "source_score_bonus": {
+    "demand_market": 18,
+    "service_titles": 15,
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "zbj_demand_hall_sample",
+      "kind": "json",
+      "site_kind": "zbj_demand_hall",
+      "category": "demand_market",
+      "location": "samples/zbj_demand_hall.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["脚本", "自动化", "采集", "ERP", "对账", "报表", "监控", "提醒"],
+      "max_items": 20,
+      "implementation_status": "skeleton",
+      "real_location_hint": "https://task.zbj.com/ or employer demand hall pages",
+      "notes": "First real version should extract title, budget, demand summary, and detail url."
+    },
+    {
+      "name": "xianyu_virtual_services_sample",
+      "kind": "json",
+      "site_kind": "xianyu_service_list",
+      "category": "service_titles",
+      "location": "samples/xianyu_service.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["脚本", "自动化", "定制", "采集", "监控", "报表", "ERP", "工具"],
+      "max_items": 20,
+      "implementation_status": "skeleton",
+      "real_location_hint": "Xianyu virtual/custom service listing pages",
+      "notes": "Real version should extract listing title, price text, seller text, and short description."
+    },
+    {
+      "name": "bilibili_hot_videos_sample",
+      "kind": "json",
+      "site_kind": "bilibili_hot_videos",
+      "category": "social_hot_posts",
+      "location": "samples/bilibili_hot_videos.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["自动化", "脚本", "工具", "效率", "运营", "采集", "报表", "提醒"],
+      "max_items": 20,
+      "implementation_status": "skeleton",
+      "real_location_hint": "Bilibili hot tutorial/tool-demo videos",
+      "notes": "This source is for topic heat and theme analysis, not direct high-intent conversion."
+    },
+    {
+      "name": "bilibili_hot_comments_sample",
+      "kind": "json",
+      "site_kind": "bilibili_hot_comments",
+      "category": "social_comments",
+      "location": "samples/bilibili_hot_comments.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["求脚本", "求工具", "太麻烦", "每天都要", "自动", "导出", "提醒", "对账"],
+      "max_items": 30,
+      "implementation_status": "skeleton",
+      "real_location_hint": "High-intent comments under Bilibili hot tutorial/tool-demo videos",
+      "notes": "Real version should keep video title, comment text, and comment permalink when possible."
+    },
+    {
+      "name": "douyin_hot_videos_sample",
+      "kind": "json",
+      "site_kind": "douyin_hot_videos",
+      "category": "social_hot_posts",
+      "location": "samples/douyin_hot_videos.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["抖音", "抖店", "直播间", "类目", "货盘", "流量", "转化", "运营"],
+      "max_items": 20,
+      "implementation_status": "skeleton",
+      "real_location_hint": "Douyin hot/search pages for e-commerce ops, livestream, and workflow topics",
+      "notes": "Real version will likely need Cloak/CDP plus logged-in profile for stable rendering."
+    },
+    {
+      "name": "douyin_hot_comments_sample",
+      "kind": "json",
+      "site_kind": "douyin_hot_comments",
+      "category": "social_comments",
+      "location": "samples/douyin_hot_comments.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["怎么", "如何", "有没有", "能不能", "类目", "起店", "汇总", "提醒", "直播间", "数据"],
+      "max_items": 30,
+      "implementation_status": "skeleton",
+      "real_location_hint": "High-intent comments under Douyin ecommerce and livestream ops videos",
+      "notes": "Real version should retain video title, comment text, author, and comment permalink when possible."
+    },
+    {
+      "name": "xiaohongshu_hot_notes_sample",
+      "kind": "json",
+      "site_kind": "xiaohongshu_hot_notes",
+      "category": "social_hot_posts",
+      "location": "samples/xiaohongshu_hot_notes.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["小红书", "私域", "线索", "表格", "汇总", "提醒", "运营", "数据"],
+      "max_items": 20,
+      "implementation_status": "skeleton",
+      "real_location_hint": "Xiaohongshu hot notes for private-domain ops, spreadsheet pain, and conversion workflow topics",
+      "notes": "Real version should preserve note title, short summary, author signals, and note permalink."
+    },
+    {
+      "name": "xiaohongshu_hot_comments_sample",
+      "kind": "json",
+      "site_kind": "xiaohongshu_hot_comments",
+      "category": "social_comments",
+      "location": "samples/xiaohongshu_hot_comments.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["怎么", "如何", "有没有", "能不能", "留资", "私域", "线索", "表格", "提醒"],
+      "max_items": 30,
+      "implementation_status": "skeleton",
+      "real_location_hint": "High-intent comments under Xiaohongshu notes about lead capture, private-domain ops, and data workflows",
+      "notes": "Real version should retain note title context, comment text, author, and comment permalink when possible."
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "database_path": "data/douyin_sample.db",
+  "min_score": 10,
+  "notify_min_score": 40,
+  "export_path": "exports/douyin_sample.csv",
+  "health_export_path": "exports/douyin_sample_health.csv",
+  "product_directions_export_path": "exports/douyin_sample_products.csv",
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 20,
+      "keywords": ["怎么", "如何", "有没有", "能不能", "类目", "货盘", "起店"]
+    },
+    "high_frequency": {
+      "score": 12,
+      "keywords": ["每天", "重复", "日报", "汇总", "提醒", "直播间"]
+    },
+    "pain": {
+      "score": 10,
+      "keywords": ["麻烦", "白干", "手抄", "选错", "低成本", "异常"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["数据", "表格", "提醒", "运营", "转化", "流量", "货盘", "类目"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "黑产", "破解", "stolen account", "credential stuffing"]
+    }
+  },
+  "source_score_bonus": {
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "douyin_hot_videos_sample",
+      "kind": "json",
+      "site_kind": "douyin_hot_videos",
+      "category": "social_hot_posts",
+      "location": "samples/douyin_hot_videos.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["抖音", "抖店", "直播间", "类目", "货盘", "流量", "转化", "运营"],
+      "max_items": 20
+    },
+    {
+      "name": "douyin_hot_comments_sample",
+      "kind": "json",
+      "site_kind": "douyin_hot_comments",
+      "category": "social_comments",
+      "location": "samples/douyin_hot_comments.sample.json",
+      "json_items_path": "items",
+      "field_map": {
+        "title": "title",
+        "content": "content",
+        "url": "url",
+        "published_at": "published_at"
+      },
+      "title_include_keywords": ["怎么", "如何", "有没有", "能不能", "类目", "起店", "汇总", "提醒", "直播间", "数据"],
+      "max_items": 20
+    }
+  ]
+}

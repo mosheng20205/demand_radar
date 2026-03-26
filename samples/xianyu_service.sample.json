@@ -1,0 +1,42 @@
+{
+  "items": [
+    {
+      "title": "Python automation script service for reports and alerts",
+      "content": "Build daily report exports, exception alerts, data collection tasks, and reconciliation helpers.",
+      "url": "https://example.com/xianyu/2001",
+      "published_at": "2026-03-25 11:00:00",
+      "priceText": "399",
+      "sellerName": "DataOps Studio",
+      "cityName": "Hangzhou",
+      "tags": ["python", "report", "monitor", "reconcile"]
+    },
+    {
+      "title": "ERP reconcile tool with batch export automation",
+      "content": "For ecommerce ops and finance teams that need less manual reconciliation and more reliable exports.",
+      "url": "https://example.com/xianyu/2002",
+      "published_at": "2026-03-25 12:00:00",
+      "price": "699",
+      "seller": {
+        "nick": "ERP Helper"
+      },
+      "location": {
+        "city": "Shenzhen"
+      },
+      "serviceTags": ["erp", "export", "batch", "automation"]
+    },
+    {
+      "itemTitle": "Shop dashboard automation with daily export alerts",
+      "summary": "Build store dashboards, alert rules, and bulk export helpers for ops teams.",
+      "detailUrl": "/item/3003",
+      "publishTime": "2026-03-25 13:30:00",
+      "priceInfo": {
+        "displayPrice": "899"
+      },
+      "seller": {
+        "name": "Ops Workflow Lab"
+      },
+      "areaName": "Guangzhou",
+      "labels": ["dashboard", "alert", "export", "automation"]
+    }
+  ]
+}

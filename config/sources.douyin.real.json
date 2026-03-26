@@ -1,0 +1,137 @@
+{
+  "database_path": "data/douyin_real.db",
+  "min_score": 10,
+  "notify_min_score": 999,
+  "export_path": "exports/douyin_real.csv",
+  "health_export_path": "exports/douyin_real_health.csv",
+  "theme_export_path": "exports/douyin_real_themes.csv",
+  "product_directions_export_path": "exports/douyin_real_products.csv",
+  "top_leads_export_path": "exports/douyin_real_top20.csv",
+  "log_path": "logs/demand_radar_douyin_real.log",
+  "log_level": "INFO",
+  "fetch": {
+    "timeout_seconds": 20,
+    "retries": 0,
+    "backoff_seconds": 1,
+    "user_agent": "DemandRadar/0.1 (+douyin-real)"
+  },
+  "cloak": {
+    "api_base_url": "${DEMAND_RADAR_CLOAK_API_BASE_URL}",
+    "profile_id": "00a9e1c7-321e-478f-b065-c780b58597e9",
+    "profile_name": "",
+    "close_after_fetch": false,
+    "queue": true,
+    "timeout_seconds": 20
+  },
+  "notifications": {
+    "wecom": { "enabled": false, "webhook_url": "" },
+    "feishu": { "enabled": false, "webhook_url": "" },
+    "email": {
+      "enabled": false,
+      "host": "",
+      "port": 465,
+      "username": "",
+      "password": "",
+      "from_addr": "",
+      "to_addrs": [],
+      "use_ssl": true
+    }
+  },
+  "keyword_rules": {
+    "high_intent": {
+      "score": 20,
+      "keywords": ["怎么", "如何", "有没有", "能不能", "什么", "联系", "是不是", "侵权", "类目", "货盘", "起店", "抖店"]
+    },
+    "high_frequency": {
+      "score": 12,
+      "keywords": ["每天", "重复", "日报", "汇总", "提醒", "直播间"]
+    },
+    "pain": {
+      "score": 10,
+      "keywords": ["麻烦", "白干", "手抄", "选错", "低成本", "异常", "不够精准", "没有入池", "侵权"]
+    },
+    "value_actions": {
+      "score": 10,
+      "keywords": ["数据", "表格", "提醒", "运营", "转化", "流量", "货盘", "类目", "工具", "关联", "价格", "成本", "利润", "投流", "1688", "分销", "入池"]
+    },
+    "risky": {
+      "score": -40,
+      "keywords": ["盗号", "黑产", "破解", "stolen account", "credential stuffing"]
+    }
+  },
+  "source_score_bonus": {
+    "social_hot_posts": 8,
+    "social_comments": 8
+  },
+  "sources": [
+    {
+      "name": "douyin_hot_videos_real",
+      "kind": "douyin_hot_videos",
+      "site_kind": "douyin_hot_videos",
+      "category": "social_hot_posts",
+      "location": "https://www.douyin.com/search/%E6%8A%96%E5%BA%97%20%E8%BF%90%E8%90%A5?type=video",
+      "default_url": "https://www.douyin.com/search/%E6%8A%96%E5%BA%97%20%E8%BF%90%E8%90%A5?type=video",
+      "wait_selector": "body",
+      "wait_until": "commit",
+      "timeout_seconds": 60,
+      "post_load_wait_ms": 7000,
+      "scroll_steps": 3,
+      "scroll_pause_ms": 1600,
+      "retry_on_empty_attempts": 1,
+      "retry_on_empty_wait_ms": 2500,
+      "retry_on_empty_reset_to_blank": true,
+      "video_response_body_max_chars": 1500000,
+      "video_network_log_path": "logs/douyin_hot_videos.real.network.json",
+      "page_actions": [
+        {
+          "type": "evaluate",
+          "script": "() => { const normalize = (value) => (value || '').replace(/\\s+/g, ' ').trim(); const closeTexts = ['稍后再说', '以后再说', '知道了', '我知道了', '关闭']; for (const text of closeTexts) { const node = Array.from(document.querySelectorAll('button, div, span')).find((item) => normalize(item.textContent) === text); if (node instanceof HTMLElement) { node.click(); } } return document.body ? document.body.innerText.slice(0, 200) : ''; }",
+          "wait_after_ms": 1500
+        }
+      ],
+      "rendered_html_path": "logs/douyin_hot_videos.real.rendered.html",
+      "screenshot_path": "logs/douyin_hot_videos.real.png",
+      "extracted_json_path": "logs/douyin_hot_videos.real.items.json",
+      "title_include_keywords": ["抖店", "运营", "起店", "类目", "货盘", "流量", "转化", "直播间"],
+      "max_items": 20,
+      "cloak": {
+        "profile_id": "00a9e1c7-321e-478f-b065-c780b58597e9",
+        "profile_name": "",
+        "close_after_fetch": false
+      }
+    },
+    {
+      "name": "douyin_hot_comments_real",
+      "kind": "douyin_hot_comments",
+      "category": "social_comments",
+      "seed_source_name": "douyin_hot_videos_real",
+      "seed_limit": 3,
+      "comments_per_video": 5,
+      "seed_title_include_keywords": ["抖店", "起店", "类目", "货盘", "选品", "流量", "售后", "供应链", "一件代发", "直播间", "数据"],
+      "seed_title_exclude_keywords": ["招聘", "培训", "课程", "教程", "陪跑", "收徒", "资料"],
+      "comment_wait_selector": "body",
+      "comment_wait_until": "commit",
+      "comment_timeout_seconds": 60,
+      "comment_post_load_wait_ms": 9000,
+      "comment_scroll_steps": 5,
+      "comment_scroll_pause_ms": 1800,
+      "comment_response_body_max_chars": 400000,
+      "comment_network_log_template": "logs/douyin_hot_comments.real.video_{video_index}.network.json",
+      "comment_rendered_html_template": "logs/douyin_hot_comments.real.video_{video_index}.rendered.html",
+      "comment_screenshot_template": "logs/douyin_hot_comments.real.video_{video_index}.png",
+      "comment_question_keywords": ["怎么", "如何", "有没有", "能不能", "需要", "请问", "想问", "为什么", "哪种", "哪里", "多少", "什么", "联系"],
+      "comment_business_keywords": ["抖店", "店铺", "类目", "货盘", "选品", "供应链", "一件代发", "售后", "发货", "流量", "转化", "直播间", "数据", "提醒", "复盘", "价格", "成本", "利润", "投流", "工具", "起店", "1688", "关联", "入池", "侵权", "分销", "出单"],
+      "comment_text_exclude_keywords": ["求资料", "求课程", "已三连", "已关注", "老师", "打卡", "路过", "哈哈", "支持一下", "收徒", "陪跑"],
+      "comment_author_exclude_keywords": ["官方", "课程", "培训", "陪跑"],
+      "comment_min_message_length": 4,
+      "comment_max_message_length": 120,
+      "title_exclude_keywords": ["哈哈", "支持", "打卡", "路过"],
+      "max_items": 8,
+      "cloak": {
+        "profile_id": "00a9e1c7-321e-478f-b065-c780b58597e9",
+        "profile_name": "",
+        "close_after_fetch": false
+      }
+    }
+  ]
+}
