@@ -2,12 +2,26 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 import json
+import re
 import smtplib
 import ssl
 import urllib.request
 from email.message import EmailMessage
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from radar.models import Lead
+
+
+_VOLATILE_QUERY_PARAMS = {
+    "spm",
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_term",
+    "utm_content",
+    "xsec_source",
+    "xsec_token",
+}
 
 
 def _truncate(value: str, limit: int) -> str:
@@ -31,6 +45,46 @@ def _source_summary(leads: list[Lead]) -> str:
     counter = Counter(lead.source_name for lead in leads)
     parts = [f"{name}:{count}" for name, count in counter.most_common(5)]
     return " | ".join(parts)
+
+
+def _normalize_key_text(value: str, *, limit: int = 120) -> str:
+    normalized = re.sub(r"\s+", " ", (value or "").strip().lower())
+    return normalized[:limit]
+
+
+def _canonicalize_url(value: str) -> str:
+    text = (value or "").strip()
+    if not text:
+        return ""
+    try:
+        parsed = urlsplit(text)
+    except ValueError:
+        return text.lower()
+    query_pairs = [
+        (key, item)
+        for key, item in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.lower() not in _VOLATILE_QUERY_PARAMS
+    ]
+    normalized_path = parsed.path.rstrip("/") or parsed.path or ""
+    normalized_query = urlencode(query_pairs, doseq=True)
+    return urlunsplit((parsed.scheme.lower(), parsed.netloc.lower(), normalized_path, normalized_query, ""))
+
+
+def _notification_dedupe_key(lead: Lead) -> str:
+    normalized_url = _canonicalize_url(lead.url)
+    normalized_title = _normalize_key_text(lead.title, limit=80)
+    normalized_content = _normalize_key_text(lead.content, limit=120)
+    return f"{normalized_url}|{normalized_title}|{normalized_content}"
+
+
+def dedupe_notification_leads(leads: list[Lead]) -> list[Lead]:
+    deduped: dict[str, Lead] = {}
+    for lead in leads:
+        key = _notification_dedupe_key(lead)
+        current = deduped.get(key)
+        if current is None or (lead.score, lead.opportunity_strength) > (current.score, current.opportunity_strength):
+            deduped[key] = lead
+    return sorted(deduped.values(), key=lambda item: (item.score, item.opportunity_strength), reverse=True)
 
 
 def _top_leads(leads: list[Lead], limit: int) -> list[Lead]:
@@ -306,22 +360,26 @@ def send_email_text(email_config: dict, subject: str, body: str) -> None:
 
 
 def send_notifications(config: dict, leads: list[Lead]) -> int:
+    unique_leads = dedupe_notification_leads(leads)
+    if not unique_leads:
+        return 0
+
     notifications = config.get("notifications", {})
     count = 0
 
     wecom = notifications.get("wecom", {})
     if wecom.get("enabled") and wecom.get("webhook_url"):
-        send_wecom(wecom["webhook_url"], leads)
+        send_wecom(wecom["webhook_url"], unique_leads)
         count += 1
 
     feishu = notifications.get("feishu", {})
     if feishu.get("enabled") and feishu.get("webhook_url"):
-        send_feishu(feishu["webhook_url"], leads)
+        send_feishu(feishu["webhook_url"], unique_leads)
         count += 1
 
     email = notifications.get("email", {})
     if email.get("enabled") and email.get("host") and email.get("to_addrs"):
-        send_email(email, leads)
+        send_email(email, unique_leads)
         count += 1
 
     return count

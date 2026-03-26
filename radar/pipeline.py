@@ -13,7 +13,7 @@ from radar.analysis import (
     select_top_leads,
 )
 from radar.fetchers import fetch_source
-from radar.notify import send_daily_summary, send_failure_alert, send_notifications
+from radar.notify import dedupe_notification_leads, send_daily_summary, send_failure_alert, send_notifications
 from radar.scoring import score_lead
 from radar.storage import (
     ensure_database,
@@ -184,6 +184,7 @@ def run_pipeline(config: dict, export_path: str | None = None) -> dict[str, int]
         for lead in inserted_leads_all
         if lead.score >= notify_min_score and _should_notify_lead(lead, config)
     ]
+    leads_to_notify = dedupe_notification_leads(leads_to_notify)
     notifications_sent = send_notifications(config, leads_to_notify) if leads_to_notify else 0
     daily_summary_sent = 0
     daily_summary_config = config.get("daily_summary", {})
