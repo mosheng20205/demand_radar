@@ -70,7 +70,7 @@ def _canonicalize_url(value: str) -> str:
     return urlunsplit((parsed.scheme.lower(), parsed.netloc.lower(), normalized_path, normalized_query, ""))
 
 
-def _notification_dedupe_key(lead: Lead) -> str:
+def notification_dedupe_key(lead: Lead) -> str:
     normalized_url = _canonicalize_url(lead.url)
     normalized_title = _normalize_key_text(lead.title, limit=80)
     normalized_content = _normalize_key_text(lead.content, limit=120)
@@ -80,7 +80,7 @@ def _notification_dedupe_key(lead: Lead) -> str:
 def dedupe_notification_leads(leads: list[Lead]) -> list[Lead]:
     deduped: dict[str, Lead] = {}
     for lead in leads:
-        key = _notification_dedupe_key(lead)
+        key = notification_dedupe_key(lead)
         current = deduped.get(key)
         if current is None or (lead.score, lead.opportunity_strength) > (current.score, current.opportunity_strength):
             deduped[key] = lead

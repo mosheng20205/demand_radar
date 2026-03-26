@@ -231,6 +231,8 @@ English: The most important fields are:
   English: Main lead CSV export path.
 - `notifications`: 中文：企业微信、飞书、邮箱开关和目标地址。  
   English: WeCom, Feishu, and email notification settings.
+- `notification_dedupe_window_hours`: 中文：通知历史去重窗口，默认 `24` 小时；同一条线索在窗口内不会重复推送。  
+  English: History-based notification dedupe window, `24` hours by default; the same lead will not be re-sent inside that window.
 - `sources[]`: 中文：真正的数据来源列表。  
   English: The actual list of data sources.
 - `sources[].name`: 中文：来源标识，必须稳定且唯一。  

@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from radar.models import Lead
@@ -65,6 +65,13 @@ CREATE TABLE IF NOT EXISTS source_health (
 CREATE TABLE IF NOT EXISTS report_state (
     report_key TEXT PRIMARY KEY,
     report_value TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS notification_history (
+    notification_type TEXT NOT NULL,
+    dedupe_key TEXT NOT NULL,
+    sent_at TEXT NOT NULL,
+    PRIMARY KEY (notification_type, dedupe_key)
 );
 """
 
@@ -458,3 +465,63 @@ def export_source_health_csv(conn: sqlite3.Connection, path: str | Path) -> int:
                 [row[0], row[1], row[2], row[3], row[4], success_rate, row[5], row[6], row[7], row[8], row[9], row[10], row[11]]
             )
     return len(rows)
+
+
+def _parse_timestamp(value: str) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    for candidate in (text, text.replace(" ", "T")):
+        try:
+            return datetime.fromisoformat(candidate)
+        except ValueError:
+            continue
+    return None
+
+
+def get_recent_notification_keys(
+    conn: sqlite3.Connection,
+    notification_type: str,
+    dedupe_keys: list[str],
+    window_hours: int,
+) -> set[str]:
+    if not dedupe_keys or window_hours <= 0:
+        return set()
+
+    placeholders = ",".join("?" for _ in dedupe_keys)
+    rows = conn.execute(
+        f"""
+        SELECT dedupe_key, sent_at
+        FROM notification_history
+        WHERE notification_type = ?
+          AND dedupe_key IN ({placeholders})
+        """,
+        [notification_type, *dedupe_keys],
+    ).fetchall()
+
+    cutoff = datetime.now() - timedelta(hours=window_hours)
+    recent_keys: set[str] = set()
+    for dedupe_key, sent_at in rows:
+        sent_at_value = _parse_timestamp(str(sent_at or ""))
+        if sent_at_value and sent_at_value >= cutoff:
+            recent_keys.add(str(dedupe_key))
+    return recent_keys
+
+
+def record_notification_sent(conn: sqlite3.Connection, notification_type: str, dedupe_keys: list[str]) -> None:
+    unique_keys = sorted({key for key in dedupe_keys if key})
+    if not unique_keys:
+        return
+
+    now_value = datetime.now().isoformat(timespec="seconds")
+    for dedupe_key in unique_keys:
+        conn.execute(
+            """
+            INSERT INTO notification_history (notification_type, dedupe_key, sent_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(notification_type, dedupe_key) DO UPDATE SET
+                sent_at = excluded.sent_at
+            """,
+            (notification_type, dedupe_key, now_value),
+        )
+    conn.commit()

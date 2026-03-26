@@ -13,17 +13,25 @@ from radar.analysis import (
     select_top_leads,
 )
 from radar.fetchers import fetch_source
-from radar.notify import dedupe_notification_leads, send_daily_summary, send_failure_alert, send_notifications
+from radar.notify import (
+    dedupe_notification_leads,
+    notification_dedupe_key,
+    send_daily_summary,
+    send_failure_alert,
+    send_notifications,
+)
 from radar.scoring import score_lead
 from radar.storage import (
     ensure_database,
     export_csv,
     export_source_health_csv,
     get_daily_report_stats,
+    get_recent_notification_keys,
     get_report_state,
     get_source_health,
     load_leads,
     mark_failure_alert_sent,
+    record_notification_sent,
     record_source_run,
     set_report_state,
     should_skip_for_cooldown,
@@ -185,7 +193,30 @@ def run_pipeline(config: dict, export_path: str | None = None) -> dict[str, int]
         if lead.score >= notify_min_score and _should_notify_lead(lead, config)
     ]
     leads_to_notify = dedupe_notification_leads(leads_to_notify)
+    notification_dedupe_window_hours = int(config.get("notification_dedupe_window_hours", 24) or 24)
+    suppressed_notification_count = 0
+    if leads_to_notify and notification_dedupe_window_hours > 0:
+        dedupe_keys = [notification_dedupe_key(lead) for lead in leads_to_notify]
+        recent_notification_keys = get_recent_notification_keys(
+            conn,
+            "lead",
+            dedupe_keys,
+            notification_dedupe_window_hours,
+        )
+        if recent_notification_keys:
+            original_count = len(leads_to_notify)
+            leads_to_notify = [
+                lead for lead in leads_to_notify if notification_dedupe_key(lead) not in recent_notification_keys
+            ]
+            suppressed_notification_count = original_count - len(leads_to_notify)
+            logger.info(
+                "notification_type=lead status=deduped_recent suppressed=%s window_hours=%s",
+                suppressed_notification_count,
+                notification_dedupe_window_hours,
+            )
     notifications_sent = send_notifications(config, leads_to_notify) if leads_to_notify else 0
+    if notifications_sent > 0 and leads_to_notify:
+        record_notification_sent(conn, "lead", [notification_dedupe_key(lead) for lead in leads_to_notify])
     daily_summary_sent = 0
     daily_summary_config = config.get("daily_summary", {})
     if daily_summary_config.get("enabled", True):
